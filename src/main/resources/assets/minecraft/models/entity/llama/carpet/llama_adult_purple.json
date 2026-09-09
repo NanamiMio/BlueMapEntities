@@ -1,6 +1,6 @@
 {
   "parent": "entity/llama/llama_carpet",
   "textures": {
-    "0": "entity/equipment/llama_body/purple"
+    "0": "entity/llama/decor/purple"
   }
 }

@@ -124,7 +124,11 @@ public class CustomResourceModelRenderer implements EntityRenderer {
         }
 
         this.tileModel.initialize(modelStart);
-        this.tileModel.translate(0, 0.003f, 0);
+        float offset = 0.002f;
+        if (entity != null && entity.getUuid() != null) {
+            offset += (Math.abs(entity.getUuid().hashCode() % 1000)) * 0.000004f;
+        }
+        this.tileModel.translate(0, offset, 0);
 
     }
 
