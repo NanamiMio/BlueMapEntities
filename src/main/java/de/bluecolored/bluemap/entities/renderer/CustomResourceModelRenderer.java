@@ -124,6 +124,7 @@ public class CustomResourceModelRenderer implements EntityRenderer {
         }
 
         this.tileModel.initialize(modelStart);
+        this.tileModel.translate(0, 0.003f, 0);
 
     }
 

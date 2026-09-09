@@ -38,6 +38,25 @@ import de.bluecolored.bluemap.entities.entity.Sheep;
 
 public class SheepRenderer extends CustomResourceModelRenderer {
 
+    private static final float[][] DYE_COLORS = new float[][] {
+        {0.95f, 0.95f, 0.95f}, // 0 white
+        {0.94f, 0.50f, 0.15f}, // 1 orange
+        {0.78f, 0.31f, 0.74f}, // 2 magenta
+        {0.40f, 0.60f, 0.85f}, // 3 light blue
+        {0.96f, 0.80f, 0.22f}, // 4 yellow
+        {0.50f, 0.78f, 0.12f}, // 5 lime
+        {0.93f, 0.58f, 0.68f}, // 6 pink
+        {0.30f, 0.33f, 0.35f}, // 7 gray
+        {0.60f, 0.60f, 0.56f}, // 8 light gray
+        {0.10f, 0.55f, 0.58f}, // 9 cyan
+        {0.52f, 0.22f, 0.72f}, // 10 purple
+        {0.24f, 0.29f, 0.65f}, // 11 blue
+        {0.45f, 0.30f, 0.19f}, // 12 brown
+        {0.37f, 0.50f, 0.15f}, // 13 green
+        {0.69f, 0.18f, 0.15f}, // 14 red
+        {0.12f, 0.12f, 0.14f}  // 15 black
+    };
+
     private final ResourcePath<Model>
             SHEEP_ADULT = new ResourcePath<>(Key.MINECRAFT_NAMESPACE, "entity/sheep/adult"),
             SHEEP_BABY = new ResourcePath<>(Key.MINECRAFT_NAMESPACE, "entity/sheep/baby"),
@@ -53,23 +72,15 @@ public class SheepRenderer extends CustomResourceModelRenderer {
         if (!(entity instanceof Sheep sheep)) return;
 
         // render base body
-        ResourcePath<Model> baseModel;
-        if (sheep.getAge() < 0) {
-            baseModel = SHEEP_BABY;
-        } else {
-            baseModel = SHEEP_ADULT;
-        }
+        ResourcePath<Model> baseModel = sheep.getAge() < 0 ? SHEEP_BABY : SHEEP_ADULT;
         super.render(entity, block, baseModel.getResource(getModelProvider()), TintColorProvider.NO_TINT, tileModel);
 
-        // render wool layer if not sheared (TODO wool tint)
+        // render wool layer if not sheared
         if (!sheep.isSheared()) {
-            ResourcePath<Model> woolModel;
-            if (sheep.getAge() < 0) {
-                woolModel = SHEEP_BABY_WOOL;
-            } else {
-                woolModel = SHEEP_ADULT_WOOL;
-            }
-            super.render(entity, block, woolModel.getResource(getModelProvider()), TintColorProvider.NO_TINT, tileModel);
+            ResourcePath<Model> woolModel = sheep.getAge() < 0 ? SHEEP_BABY_WOOL : SHEEP_ADULT_WOOL;
+            int colorIdx = Math.max(0, Math.min(15, (int) sheep.getColor()));
+            float[] rgb = DYE_COLORS[colorIdx];
+            super.render(entity, block, woolModel.getResource(getModelProvider()), (idx, col) -> col.set(rgb[0], rgb[1], rgb[2], 1f, true), tileModel);
         }
 
         // apply part transform
