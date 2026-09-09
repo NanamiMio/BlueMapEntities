@@ -1,5 +1,5 @@
 {
   "parts": [
-    { "renderer": "minecraft:cow" }
+    { "model": "minecraft:entity/cow/cow" }
   ]
 }

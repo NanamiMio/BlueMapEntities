@@ -97,6 +97,7 @@ public class CustomResourceModelRenderer implements EntityRenderer {
     }
 
     void render(Entity entity, BlockNeighborhood block, Model model, TintColorProvider tintProvider, TileModelView tileModel) {
+        if (model == null) return;
         this.modelResource = model;
         this.tileModel = tileModel;
         this.tintProvider = tintProvider;

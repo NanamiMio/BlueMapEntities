@@ -47,7 +47,8 @@ public class FrogRenderer extends CustomResourceModelRenderer {
         if (!(entity instanceof AgeVariantEntity frog)) return;
 
         // craft model path based on "entity/frog/variant/frog_{variant}"
-        String modelPath = "entity/frog/variant/frog_" + frog.getRawVariant();
+        String variant = frog.getRawVariant();
+        String modelPath = "entity/frog/variant/frog_" + (variant != null && !variant.isEmpty() ? variant : "temperate");
         ResourcePath<Model> model = new ResourcePath<>(Key.MINECRAFT_NAMESPACE, modelPath);
 
         // render chosen model

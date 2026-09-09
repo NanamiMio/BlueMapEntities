@@ -49,6 +49,12 @@ public class Addon implements Runnable {
         EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("camel_husk"), CamelHusk.class));
         EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("copper_golem"), CopperGolem.class));
         EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("frog"), AgeVariantEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("iron_golem"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("minecart"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("chest_minecart"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("hopper_minecart"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("boat"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("chest_boat"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
 
 
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("llama"), LlamaRenderer::new));
@@ -85,6 +91,12 @@ public class Addon implements Runnable {
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("camel_husk"), CamelRenderer::new));
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("copper_golem"), CopperGolemRenderer::new));
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("frog"), FrogRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("iron_golem"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("minecart"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("chest_minecart"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("hopper_minecart"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("boat"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("chest_boat"), CustomResourceModelRenderer::new));
     }
 
 }

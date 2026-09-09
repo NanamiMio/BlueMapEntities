@@ -47,13 +47,9 @@ public class PigRenderer extends CustomResourceModelRenderer {
         if (!(entity instanceof Pig pig)) return;
 
         // craft model path based on "entity/pig/{age}_{variant}"
-        String modelPath = "entity/pig/";
-        if (pig.getAge() < 0) {
-            modelPath += "baby_";
-        } else {
-            modelPath += "adult_";
-        }
-        modelPath += pig.getRawVariant();
+        String age = pig.getAge() < 0 ? "baby" : "adult";
+        String variant = pig.getRawVariant();
+        String modelPath = "entity/pig/" + age + (variant != null && !variant.isEmpty() ? "_" + variant : "");
         ResourcePath<Model> model = new ResourcePath<>(Key.MINECRAFT_NAMESPACE, modelPath);
 
         // render chosen model
