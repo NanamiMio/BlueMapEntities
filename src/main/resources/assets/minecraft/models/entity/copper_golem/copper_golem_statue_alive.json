@@ -1,5 +1,4 @@
 {
-	"format_version": "1.21.11",
 	"textures": {
 		"1": "entity/copper_golem/copper_golem_eyes",
 		"golem": "entity/copper_golem/copper_golem"
