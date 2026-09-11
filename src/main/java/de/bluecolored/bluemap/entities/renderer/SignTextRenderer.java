@@ -33,11 +33,20 @@ public class SignTextRenderer {
 
     private static final Map<String, FallbackSign> FALLBACK_SIGNS = new ConcurrentHashMap<>();
     private static volatile boolean fallbackLoaded = false;
-    private static final Font SIGN_FONT;
+    private static final Font BASE_SIGN_FONT;
+    private static final boolean IS_PIXEL_FONT;
 
     static {
         Font loaded = null;
+        boolean isPixel = false;
         File[] fontCandidates = new File[]{
+                new File(System.getProperty("user.home"), ".local/share/fonts/unifont.ttf"),
+                new File(System.getProperty("user.home"), "Library/Fonts/unifont.ttf"),
+                new File("/home/mio/.local/share/fonts/unifont.ttf"),
+                new File("unifont.ttf"),
+                new File("../unifont.ttf"),
+                new File("/home/mio/bluemap-render/unifont.ttf"),
+                new File("/usr/share/fonts/truetype/unifont/unifont.ttf"),
                 new File(System.getProperty("user.home"), ".local/share/fonts/wqy-microhei.ttc"),
                 new File("/home/mio/.local/share/fonts/wqy-microhei.ttc"),
                 new File("/usr/share/fonts/truetype/wqy/wqy-microhei.ttc")
@@ -45,8 +54,9 @@ public class SignTextRenderer {
         for (File f : fontCandidates) {
             if (f.exists() && f.isFile()) {
                 try {
-                    loaded = Font.createFont(Font.TRUETYPE_FONT, f).deriveFont(Font.BOLD, 10f);
-                    LOGGER.info("Loaded custom sign font from " + f.getAbsolutePath());
+                    loaded = Font.createFont(Font.TRUETYPE_FONT, f);
+                    isPixel = f.getName().toLowerCase(Locale.ROOT).contains("unifont");
+                    LOGGER.info("Loaded custom sign font from " + f.getAbsolutePath() + " (isPixel=" + isPixel + ")");
                     break;
                 } catch (Exception e) {
                     LOGGER.log(Level.WARNING, "Failed to load font from " + f, e);
@@ -54,19 +64,21 @@ public class SignTextRenderer {
             }
         }
         if (loaded == null) {
-            String[] families = new String[]{"WenQuanYi Micro Hei", "Noto Sans CJK SC", "Microsoft YaHei", "PingFang SC", "SimHei", Font.SANS_SERIF};
+            String[] families = new String[]{"Unifont", "WenQuanYi Micro Hei", "Noto Sans CJK SC", "Microsoft YaHei", "PingFang SC", "SimHei", Font.SANS_SERIF};
             for (String family : families) {
-                Font test = new Font(family, Font.BOLD, 10);
+                Font test = new Font(family, Font.PLAIN, 16);
                 if (test.canDisplay('经') || family.equals(Font.SANS_SERIF)) {
                     loaded = test;
+                    isPixel = family.toLowerCase(Locale.ROOT).contains("unifont");
                     break;
                 }
             }
         }
         if (loaded == null) {
-            loaded = new Font(Font.SANS_SERIF, Font.BOLD, 10);
+            loaded = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
         }
-        SIGN_FONT = loaded;
+        BASE_SIGN_FONT = loaded;
+        IS_PIXEL_FONT = isPixel;
     }
 
     private final TextureGallery textureGallery;
@@ -250,22 +262,44 @@ public class SignTextRenderer {
         // Render with crisp text
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 
-        // Calculate vertical centering
         int validLineCount = Math.min(4, lines.size());
-        int lineHeight = 11;
-        int totalTextHeight = validLineCount * lineHeight;
-        int startY = Math.max(12, (CANVAS_H - totalTextHeight) / 2 + 10);
+        float baseSize;
+        int lineHeight;
+
+        if (validLineCount == 1) {
+            baseSize = 16f;
+            lineHeight = 18;
+        } else if (validLineCount == 2) {
+            baseSize = 13f;
+            lineHeight = 15;
+        } else if (validLineCount == 3) {
+            baseSize = 11f;
+            lineHeight = 12;
+        } else {
+            baseSize = 10f;
+            lineHeight = 11;
+        }
+
+        int fontStyle = IS_PIXEL_FONT ? Font.PLAIN : Font.BOLD;
+        Font font = BASE_SIGN_FONT.deriveFont(fontStyle, baseSize);
+        g.setFont(font);
+        FontMetrics baseFm = g.getFontMetrics();
+        int ascent = baseFm.getAscent();
+        int fontH = baseFm.getHeight();
+
+        int totalBlockHeight = (validLineCount - 1) * lineHeight + fontH;
+        int startY = Math.max(ascent, (CANVAS_H - totalBlockHeight) / 2 + ascent);
 
         g.setColor(Color.WHITE);
         for (int i = 0; i < validLineCount; i++) {
             String line = lines.get(i);
-            Font lineFont = SIGN_FONT;
+            Font lineFont = font;
             g.setFont(lineFont);
             FontMetrics fm = g.getFontMetrics();
             int strW = fm.stringWidth(line);
-            if (strW > CANVAS_W - 4) {
-                float scale = (float) (CANVAS_W - 4) / strW;
-                lineFont = SIGN_FONT.deriveFont(SIGN_FONT.getSize2D() * scale);
+            if (strW > CANVAS_W - 6) {
+                float scale = (float) (CANVAS_W - 6) / strW;
+                lineFont = BASE_SIGN_FONT.deriveFont(fontStyle, baseSize * scale);
                 g.setFont(lineFont);
                 fm = g.getFontMetrics();
                 strW = fm.stringWidth(line);

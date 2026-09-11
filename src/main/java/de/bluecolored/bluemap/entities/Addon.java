@@ -55,6 +55,14 @@ public class Addon implements Runnable {
         EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("hopper_minecart"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
         EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("boat"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
         EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("chest_boat"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("villager"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("bat"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("salmon"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("cod"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("pufferfish"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("allay"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("tadpole"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("vex"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
 
 
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("llama"), LlamaRenderer::new));
@@ -97,6 +105,14 @@ public class Addon implements Runnable {
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("hopper_minecart"), CustomResourceModelRenderer::new));
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("boat"), CustomResourceModelRenderer::new));
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("chest_boat"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("villager"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("bat"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("salmon"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("cod"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("pufferfish"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("allay"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("tadpole"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("vex"), CustomResourceModelRenderer::new));
 
         // Install Sign Renderer interceptor
         try {
