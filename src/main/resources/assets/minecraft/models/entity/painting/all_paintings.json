@@ -1,0 +1,44 @@
+{
+  "textures": {
+    "back": "painting/back",
+    "kebab": "painting/kebab",
+    "aztec": "painting/aztec",
+    "alban": "painting/alban",
+    "aztec2": "painting/aztec2",
+    "bomb": "painting/bomb",
+    "plant": "painting/plant",
+    "wasteland": "painting/wasteland",
+    "pool": "painting/pool",
+    "courbet": "painting/courbet",
+    "sea": "painting/sea",
+    "sunset": "painting/sunset",
+    "creebet": "painting/creebet",
+    "wanderer": "painting/wanderer",
+    "graham": "painting/graham",
+    "match": "painting/match",
+    "bust": "painting/bust",
+    "stage": "painting/stage",
+    "void": "painting/void",
+    "skull_and_roses": "painting/skull_and_roses",
+    "wither": "painting/wither",
+    "fighters": "painting/fighters",
+    "donkey_kong": "painting/donkey_kong",
+    "skeleton": "painting/skeleton",
+    "burning_skull": "painting/burning_skull",
+    "pigscene": "painting/pigscene",
+    "pointer": "painting/pointer",
+    "earth": "painting/earth",
+    "wind": "painting/wind",
+    "fire": "painting/fire",
+    "water": "painting/water"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [1, 1, 1],
+      "faces": {
+        "north": { "uv": [0, 0, 16, 16], "texture": "#back" }
+      }
+    }
+  ]
+}
