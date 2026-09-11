@@ -5,7 +5,7 @@
     32
   ],
   "textures": {
-    "0": "entity/sheep/sheep_wool"
+    "0": "entity/sheep/sheep_fur"
   },
   "elements": [
     {
