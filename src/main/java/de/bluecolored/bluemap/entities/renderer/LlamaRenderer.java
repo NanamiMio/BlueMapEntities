@@ -68,7 +68,9 @@ public class LlamaRenderer extends CustomResourceModelRenderer {
         }
 
         ResourcePath<Model> baseModel = new ResourcePath<>(Key.MINECRAFT_NAMESPACE, baseModelPath);
-        super.render(entity, block, baseModel.getResource(getModelProvider()), TintColorProvider.NO_TINT, tileModel);
+        Model baseModelObj = baseModel.getResource(getModelProvider());
+        System.out.println("[DEBUG_LLAMA_RENDER] entity=" + entity + ", isTrader=" + isTraderLlama + ", var=" + llama.getVariant() + ", baseModel=" + baseModelPath + ", baseModelObj=" + baseModelObj + (baseModelObj != null ? " tex=" + baseModelObj.getTextures() : ""));
+        super.render(entity, block, baseModelObj, TintColorProvider.NO_TINT, tileModel);
 
 
         // chest model (only if adult)
@@ -113,7 +115,9 @@ public class LlamaRenderer extends CustomResourceModelRenderer {
 
         if (decorationModelPath != null) {
             ResourcePath<Model> decorationModel = new ResourcePath<>(Key.MINECRAFT_NAMESPACE, decorationModelPath);
-            super.render(entity, block, decorationModel.getResource(getModelProvider()), TintColorProvider.NO_TINT, tileModel);
+            Model decorModelObj = decorationModel.getResource(getModelProvider());
+            System.out.println("[DEBUG_LLAMA_DECOR] decorModel=" + decorationModelPath + ", decorModelObj=" + decorModelObj + (decorModelObj != null ? " tex=" + decorModelObj.getTextures() : ""));
+            super.render(entity, block, decorModelObj, TintColorProvider.NO_TINT, tileModel);
         }
 
         // apply part transform

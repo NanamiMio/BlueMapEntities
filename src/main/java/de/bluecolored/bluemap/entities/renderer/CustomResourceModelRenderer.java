@@ -200,6 +200,14 @@ public class CustomResourceModelRenderer implements EntityRenderer {
         // ####### texture
         ResourcePath<Texture> texturePath = face.getTexture().getTexturePath(modelResource.getTextures()::get);
         int textureId = textureGallery.get(texturePath);
+        if (texturePath != null && texturePath.getValue().contains("llama")) {
+            System.out.println("[DEBUG_FACE] llama face: texPath=" + texturePath.getFormatted() + " -> textureId=" + textureId);
+        } else if (textureId == 0) {
+            String rawRef = face.getTexture().isReference() ? face.getTexture().getReferenceName() : "no_ref";
+            if (rawRef.contains("0") || rawRef.contains("llama") || (texturePath != null && texturePath.getValue().contains("llama"))) {
+                System.out.println("[DEBUG_FACE_ZERO] texId=0! rawRef=" + rawRef + ", texPath=" + (texturePath != null ? texturePath.getFormatted() : "null") + ", modelTex=" + modelResource.getTextures());
+            }
+        }
         tileModel.setMaterialIndex(face1, textureId);
         tileModel.setMaterialIndex(face2, textureId);
 
