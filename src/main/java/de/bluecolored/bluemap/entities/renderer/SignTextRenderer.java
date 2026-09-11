@@ -33,6 +33,41 @@ public class SignTextRenderer {
 
     private static final Map<String, FallbackSign> FALLBACK_SIGNS = new ConcurrentHashMap<>();
     private static volatile boolean fallbackLoaded = false;
+    private static final Font SIGN_FONT;
+
+    static {
+        Font loaded = null;
+        File[] fontCandidates = new File[]{
+                new File(System.getProperty("user.home"), ".local/share/fonts/wqy-microhei.ttc"),
+                new File("/home/mio/.local/share/fonts/wqy-microhei.ttc"),
+                new File("/usr/share/fonts/truetype/wqy/wqy-microhei.ttc")
+        };
+        for (File f : fontCandidates) {
+            if (f.exists() && f.isFile()) {
+                try {
+                    loaded = Font.createFont(Font.TRUETYPE_FONT, f).deriveFont(Font.BOLD, 10f);
+                    LOGGER.info("Loaded custom sign font from " + f.getAbsolutePath());
+                    break;
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "Failed to load font from " + f, e);
+                }
+            }
+        }
+        if (loaded == null) {
+            String[] families = new String[]{"WenQuanYi Micro Hei", "Noto Sans CJK SC", "Microsoft YaHei", "PingFang SC", "SimHei", Font.SANS_SERIF};
+            for (String family : families) {
+                Font test = new Font(family, Font.BOLD, 10);
+                if (test.canDisplay('经') || family.equals(Font.SANS_SERIF)) {
+                    loaded = test;
+                    break;
+                }
+            }
+        }
+        if (loaded == null) {
+            loaded = new Font(Font.SANS_SERIF, Font.BOLD, 10);
+        }
+        SIGN_FONT = loaded;
+    }
 
     private final TextureGallery textureGallery;
     private int whiteMaterialIndex = -1;
@@ -214,9 +249,6 @@ public class SignTextRenderer {
 
         // Render with crisp text
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-        Font font = new Font(Font.SANS_SERIF, Font.BOLD, 10);
-        g.setFont(font);
-        FontMetrics fm = g.getFontMetrics();
 
         // Calculate vertical centering
         int validLineCount = Math.min(4, lines.size());
@@ -227,7 +259,17 @@ public class SignTextRenderer {
         g.setColor(Color.WHITE);
         for (int i = 0; i < validLineCount; i++) {
             String line = lines.get(i);
+            Font lineFont = SIGN_FONT;
+            g.setFont(lineFont);
+            FontMetrics fm = g.getFontMetrics();
             int strW = fm.stringWidth(line);
+            if (strW > CANVAS_W - 4) {
+                float scale = (float) (CANVAS_W - 4) / strW;
+                lineFont = SIGN_FONT.deriveFont(SIGN_FONT.getSize2D() * scale);
+                g.setFont(lineFont);
+                fm = g.getFontMetrics();
+                strW = fm.stringWidth(line);
+            }
             int x = Math.max(2, (CANVAS_W - strW) / 2);
             int y = startY + i * lineHeight;
             g.drawString(line, x, y);
@@ -272,13 +314,14 @@ public class SignTextRenderer {
             int start = s.indexOf('"', idx + 7);
             if (start != -1) {
                 int end = s.indexOf('"', start + 1);
-                if (end != -1) return s.substring(start + 1, end);
+                if (end != -1) return s.substring(start + 1, end).replaceAll("(?i)§[0-9a-fk-or]", "").trim();
             }
         }
         if (s.startsWith("\"") && s.endsWith("\"") && s.length() >= 2) {
             s = s.substring(1, s.length() - 1);
         }
-        return s;
+        s = s.replaceAll("(?i)§[0-9a-fk-or]", "");
+        return s.trim();
     }
 
     private static void addIfNotEmpty(List<String> list, String s) {
