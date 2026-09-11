@@ -39,7 +39,7 @@ import de.bluecolored.bluemap.entities.entity.Sheep;
 public class SheepRenderer extends CustomResourceModelRenderer {
 
     private static final float[][] DYE_COLORS = new float[][] {
-        {0.95f, 0.95f, 0.95f}, // 0 white
+        {1.0f, 1.0f, 1.0f}, // 0 white
         {0.94f, 0.50f, 0.15f}, // 1 orange
         {0.78f, 0.31f, 0.74f}, // 2 magenta
         {0.40f, 0.60f, 0.85f}, // 3 light blue

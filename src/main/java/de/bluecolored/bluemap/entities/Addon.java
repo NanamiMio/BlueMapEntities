@@ -97,6 +97,41 @@ public class Addon implements Runnable {
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("hopper_minecart"), CustomResourceModelRenderer::new));
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("boat"), CustomResourceModelRenderer::new));
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("chest_boat"), CustomResourceModelRenderer::new));
+
+        // Install Sign Renderer interceptor
+        try {
+            de.bluecolored.bluemap.core.map.hires.block.BlockRendererType originalDefault = de.bluecolored.bluemap.core.map.hires.block.BlockRendererType.DEFAULT;
+            de.bluecolored.bluemap.core.map.hires.block.BlockRendererType wrappedDefault = new de.bluecolored.bluemap.core.map.hires.block.BlockRendererType.Impl(
+                    Key.bluemap("default"),
+                    (resourcePack, textureGallery, renderSettings) -> {
+                        de.bluecolored.bluemap.core.map.hires.block.BlockRenderer original = originalDefault.create(resourcePack, textureGallery, renderSettings);
+                        SignTextRenderer signTextRenderer = new SignTextRenderer(textureGallery);
+                        return new DelegatingBlockRenderer(original, signTextRenderer);
+                    }
+            );
+
+            de.bluecolored.bluemap.core.map.hires.block.BlockRendererType.REGISTRY.register(wrappedDefault);
+            de.bluecolored.bluemap.core.map.hires.block.BlockRendererType.REGISTRY.register(new de.bluecolored.bluemap.core.map.hires.block.BlockRendererType.Impl(
+                    Key.bluemap("sign"),
+                    (resourcePack, textureGallery, renderSettings) -> {
+                        de.bluecolored.bluemap.core.map.hires.block.BlockRenderer original = originalDefault.create(resourcePack, textureGallery, renderSettings);
+                        SignTextRenderer signTextRenderer = new SignTextRenderer(textureGallery);
+                        return new DelegatingBlockRenderer(original, signTextRenderer);
+                    }
+            ));
+
+            java.lang.reflect.Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+            unsafeField.setAccessible(true);
+            sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
+
+            java.lang.reflect.Field defaultField = de.bluecolored.bluemap.core.map.hires.block.BlockRendererType.class.getDeclaredField("DEFAULT");
+            Object base = unsafe.staticFieldBase(defaultField);
+            long offset = unsafe.staticFieldOffset(defaultField);
+            unsafe.putObject(base, offset, wrappedDefault);
+            LOGGER.info("Successfully hooked BlockRendererType.DEFAULT with SignTextRenderer!");
+        } catch (Throwable t) {
+            LOGGER.log(java.util.logging.Level.WARNING, "Failed to hook BlockRendererType.DEFAULT", t);
+        }
     }
 
 }
