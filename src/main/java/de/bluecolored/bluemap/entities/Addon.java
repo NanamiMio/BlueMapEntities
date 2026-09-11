@@ -63,6 +63,12 @@ public class Addon implements Runnable {
         EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("allay"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
         EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("tadpole"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
         EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("vex"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("wolf"), de.bluecolored.bluemap.entities.entity.Wolf.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("rabbit"), de.bluecolored.bluemap.entities.entity.Rabbit.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("armor_stand"), de.bluecolored.bluemap.entities.entity.ArmorStand.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("painting"), de.bluecolored.bluemap.entities.entity.Painting.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("item_frame"), de.bluecolored.bluemap.entities.entity.ItemFrame.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("glow_item_frame"), de.bluecolored.bluemap.entities.entity.ItemFrame.class));
 
 
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("llama"), LlamaRenderer::new));
@@ -113,6 +119,12 @@ public class Addon implements Runnable {
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("allay"), CustomResourceModelRenderer::new));
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("tadpole"), CustomResourceModelRenderer::new));
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("vex"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("wolf"), WolfRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("rabbit"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("armor_stand"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("painting"), PaintingRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("item_frame"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("glow_item_frame"), CustomResourceModelRenderer::new));
 
         // Install Sign Renderer interceptor
         try {

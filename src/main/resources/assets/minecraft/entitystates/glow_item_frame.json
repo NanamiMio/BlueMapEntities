@@ -1,0 +1,5 @@
+{
+  "parts": [
+    { "model": "minecraft:entity/item_frame/glow_item_frame" }
+  ]
+}
