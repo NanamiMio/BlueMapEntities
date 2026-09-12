@@ -81,6 +81,10 @@ public class CustomResourceModelRenderer implements EntityRenderer {
         for (int i = 0; i < rawUvs.length; i++) rawUvs[i] = new VectorM2f(0, 0);
     }
 
+    protected Model model(String path) {
+        return new ResourcePath<Model>(de.bluecolored.bluemap.core.util.Key.MINECRAFT_NAMESPACE, path).getResource(getModelProvider());
+    }
+
     @Override
     public void render(Entity entity, BlockNeighborhood block, Part part, TileModelView tileModel) {
         render(
