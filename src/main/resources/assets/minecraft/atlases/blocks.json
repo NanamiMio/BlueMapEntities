@@ -9,6 +9,16 @@
             "type": "directory",
             "source": "painting",
             "prefix": "painting/"
+        },
+        {
+            "type": "directory",
+            "source": "item",
+            "prefix": "item/"
+        },
+        {
+            "type": "directory",
+            "source": "models/armor",
+            "prefix": "models/armor/"
         }
     ]
 }

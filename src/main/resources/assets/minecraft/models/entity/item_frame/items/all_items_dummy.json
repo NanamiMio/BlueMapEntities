@@ -1,0 +1,38 @@
+{
+  "textures": {
+    "stone_axe": "item/stone_axe",
+    "iron_ingot": "item/iron_ingot",
+    "quartz": "item/quartz",
+    "redstone": "item/redstone",
+    "potion": "item/potion",
+    "wheat": "item/wheat",
+    "cooked_porkchop": "item/cooked_porkchop",
+    "sugar_cane": "item/sugar_cane",
+    "filled_map": "item/filled_map"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        1,
+        1,
+        1
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#stone_axe"
+        }
+      }
+    }
+  ]
+}

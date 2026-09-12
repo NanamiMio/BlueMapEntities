@@ -1,0 +1,22 @@
+{
+  "credit": "Villager Toolsmith Profession Model for BlueMapEntities",
+  "texture_size": [64, 64],
+  "textures": {
+    "0": "entity/villager/profession/toolsmith"
+  },
+  "elements": [
+    {
+      "name": "coat",
+      "from": [-4.4, 4.0, -3.4],
+      "to": [4.4, 22.2, 3.4],
+      "faces": {
+        "north": { "uv": [1.5, 11.0, 3.5, 15.5], "texture": "#0" },
+        "south": { "uv": [5.0, 11.0, 7.0, 15.5], "texture": "#0" },
+        "east":  { "uv": [0.0, 11.0, 1.5, 15.5], "texture": "#0" },
+        "west":  { "uv": [3.5, 11.0, 5.0, 15.5], "texture": "#0" },
+        "up":    { "uv": [3.5, 11.0, 1.5, 9.5],  "texture": "#0" },
+        "down":  { "uv": [5.5, 9.5, 3.5, 11.0],  "texture": "#0" }
+      }
+    }
+  ]
+}

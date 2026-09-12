@@ -1,0 +1,47 @@
+{
+  "credit": "Villager Librarian Profession Model for BlueMapEntities",
+  "texture_size": [64, 64],
+  "textures": {
+    "0": "entity/villager/profession/librarian"
+  },
+  "elements": [
+    {
+      "name": "headwear",
+      "from": [-4.5, 23.5, -4.5],
+      "to": [4.5, 34.5, 4.5],
+      "faces": {
+        "north": { "uv": [10.0, 2.0, 12.0, 4.5], "texture": "#0" },
+        "south": { "uv": [14.0, 2.0, 16.0, 4.5], "texture": "#0" },
+        "east":  { "uv": [8.0, 2.0, 10.0, 4.5],  "texture": "#0" },
+        "west":  { "uv": [12.0, 2.0, 14.0, 4.5], "texture": "#0" },
+        "up":    { "uv": [10.0, 2.0, 12.0, 0.0], "texture": "#0" },
+        "down":  { "uv": [12.0, 0.0, 14.0, 2.0], "texture": "#0" }
+      }
+    },
+    {
+      "name": "hat_top",
+      "from": [-3.5, 34.5, -3.5],
+      "to": [3.5, 37.0, 3.5],
+      "faces": {
+        "north": { "uv": [10.0, 1.0, 12.0, 2.0], "texture": "#0" },
+        "south": { "uv": [10.0, 1.0, 12.0, 2.0], "texture": "#0" },
+        "east":  { "uv": [10.0, 1.0, 12.0, 2.0], "texture": "#0" },
+        "west":  { "uv": [10.0, 1.0, 12.0, 2.0], "texture": "#0" },
+        "up":    { "uv": [10.0, 0.0, 12.0, 1.0], "texture": "#0" }
+      }
+    },
+    {
+      "name": "coat",
+      "from": [-4.4, 4.0, -3.4],
+      "to": [4.4, 22.2, 3.4],
+      "faces": {
+        "north": { "uv": [1.5, 11.0, 3.5, 15.5], "texture": "#0" },
+        "south": { "uv": [5.0, 11.0, 7.0, 15.5], "texture": "#0" },
+        "east":  { "uv": [0.0, 11.0, 1.5, 15.5], "texture": "#0" },
+        "west":  { "uv": [3.5, 11.0, 5.0, 15.5], "texture": "#0" },
+        "up":    { "uv": [3.5, 11.0, 1.5, 9.5],  "texture": "#0" },
+        "down":  { "uv": [5.5, 9.5, 3.5, 11.0],  "texture": "#0" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "textures": {
+    "iron_1": "models/armor/iron_layer_1",
+    "iron_2": "models/armor/iron_layer_2",
+    "diamond_1": "models/armor/diamond_layer_1",
+    "diamond_2": "models/armor/diamond_layer_2",
+    "gold_1": "models/armor/gold_layer_1",
+    "gold_2": "models/armor/gold_layer_2"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        1,
+        1,
+        1
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#iron_1"
+        }
+      }
+    }
+  ]
+}

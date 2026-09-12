@@ -1,0 +1,26 @@
+{
+  "textures": {
+    "librarian": "entity/villager/profession/librarian",
+    "farmer": "entity/villager/profession/farmer",
+    "armorer": "entity/villager/profession/armorer",
+    "toolsmith": "entity/villager/profession/toolsmith",
+    "cleric": "entity/villager/profession/cleric",
+    "mason": "entity/villager/profession/mason",
+    "fletcher": "entity/villager/profession/fletcher",
+    "butcher": "entity/villager/profession/butcher",
+    "cartographer": "entity/villager/profession/cartographer",
+    "fisherman": "entity/villager/profession/fisherman",
+    "leatherworker": "entity/villager/profession/leatherworker",
+    "shepherd": "entity/villager/profession/shepherd",
+    "weaponsmith": "entity/villager/profession/weaponsmith"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [1, 1, 1],
+      "faces": {
+        "north": { "uv": [0, 0, 16, 16], "texture": "#librarian" }
+      }
+    }
+  ]
+}
