@@ -1,5 +1,5 @@
 {
   "parts": [
-    { "model": "minecraft:entity/villager/villager" }
+    { "renderer": "minecraft:villager" }
   ]
 }

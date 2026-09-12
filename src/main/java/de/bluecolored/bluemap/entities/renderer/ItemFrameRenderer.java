@@ -48,9 +48,12 @@ public class ItemFrameRenderer extends CustomResourceModelRenderer {
             return;
         }
 
+        int initialStart = tileModel.getStart();
+
         // 1. Render frame border and backing plate unless invisible
         if (!frame.isInvisible()) {
-            Model frameModel = model("entity/item_frame/item_frame");
+            boolean isGlow = "glow_item_frame".equals(entity.getId().getValue());
+            Model frameModel = model(isGlow ? "entity/item_frame/glow_item_frame" : "entity/item_frame/item_frame");
             if (frameModel != null) {
                 super.render(entity, block, frameModel, TintColorProvider.NO_TINT, tileModel);
             }
@@ -64,10 +67,12 @@ public class ItemFrameRenderer extends CustomResourceModelRenderer {
             if (itemModel != null) {
                 super.render(entity, block, itemModel, TintColorProvider.NO_TINT, tileModel);
             }
+            System.out.println("[DEBUG_ITEM_FRAME] pos=" + entity.getPos() + ", item=" + itemName + ", loaded=" + (itemModel != null));
         }
 
         // 3. Apply part transformation if any
         if (part.isTransformed()) {
+            tileModel.initialize(initialStart);
             tileModel.transform(part.getTransformMatrix());
         }
     }

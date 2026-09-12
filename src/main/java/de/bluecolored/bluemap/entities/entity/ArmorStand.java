@@ -34,4 +34,11 @@ public class ArmorStand extends MCAEntity {
     public ItemStack getHelmet() {
         return (armorItems != null && armorItems.length > 3) ? armorItems[3] : null;
     }
+
+    @Override
+    public com.flowpowered.math.vector.Vector2f getRotation() {
+        com.flowpowered.math.vector.Vector2f rot = super.getRotation();
+        if (rot == null) return com.flowpowered.math.vector.Vector2f.ZERO;
+        return new com.flowpowered.math.vector.Vector2f(rot.getX(), 0f);
+    }
 }

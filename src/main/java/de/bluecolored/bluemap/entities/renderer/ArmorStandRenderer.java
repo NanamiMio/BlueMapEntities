@@ -43,6 +43,8 @@ public class ArmorStandRenderer extends CustomResourceModelRenderer {
 
     @Override
     public void render(Entity entity, BlockNeighborhood block, Part part, TileModelView tileModel) {
+        int initialStart = tileModel.getStart();
+
         // 1. Render base armor stand wooden rack
         Model base = model("entity/armor_stand/armor_stand");
         if (base != null) {
@@ -78,10 +80,17 @@ public class ArmorStandRenderer extends CustomResourceModelRenderer {
                 Model m = model("entity/armor/" + boots.getItemName());
                 if (m != null) super.render(entity, block, m, TintColorProvider.NO_TINT, tileModel);
             }
+
+            System.out.println("[DEBUG_ARMOR_STAND] pos=" + entity.getPos() +
+                    ", h=" + (helmet != null ? helmet.getItemName() : "none") +
+                    ", c=" + (chestplate != null ? chestplate.getItemName() : "none") +
+                    ", l=" + (leggings != null ? leggings.getItemName() : "none") +
+                    ", b=" + (boots != null ? boots.getItemName() : "none"));
         }
 
         // 3. Apply part transformation
         if (part.isTransformed()) {
+            tileModel.initialize(initialStart);
             tileModel.transform(part.getTransformMatrix());
         }
     }

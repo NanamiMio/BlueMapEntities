@@ -1,5 +1,5 @@
 {
   "parts": [
-    { "model": "minecraft:entity/item_frame/item_frame" }
+    { "renderer": "minecraft:item_frame" }
   ]
 }

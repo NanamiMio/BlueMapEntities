@@ -43,6 +43,8 @@ public class VillagerRenderer extends CustomResourceModelRenderer {
 
     @Override
     public void render(Entity entity, BlockNeighborhood block, Part part, TileModelView tileModel) {
+        int initialStart = tileModel.getStart();
+
         // 1. Render base villager model (skin, arms, legs, plains coat)
         Model base = model("entity/villager/villager");
         if (base != null) {
@@ -59,19 +61,14 @@ public class VillagerRenderer extends CustomResourceModelRenderer {
                 if (job != null) {
                     super.render(entity, block, job, TintColorProvider.NO_TINT, tileModel);
                 }
+                System.out.println("[DEBUG_VILLAGER] pos=" + entity.getPos() + ", prof=" + profession + ", loaded=" + (job != null));
             }
         }
 
         // 3. Apply part transformation
         if (part.isTransformed()) {
+            tileModel.initialize(initialStart);
             tileModel.transform(part.getTransformMatrix());
-        }
-
-        // 4. Correct body tilt: counteract pitch rotation from EntityModelRenderer
-        // keeping the villager standing straight and upright
-        float pitch = entity.getRotation().getY();
-        if (Math.abs(pitch) > 1e-4) {
-            tileModel.rotate(-pitch, 0, 0);
         }
     }
 }

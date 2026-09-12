@@ -42,4 +42,11 @@ public class Villager extends AgeEntity implements VillagerDataHolder {
         return getAge() < 0;
     }
 
+    @Override
+    public com.flowpowered.math.vector.Vector2f getRotation() {
+        com.flowpowered.math.vector.Vector2f rot = super.getRotation();
+        if (rot == null) return com.flowpowered.math.vector.Vector2f.ZERO;
+        // Keep yaw (X), force pitch (Y) to 0 so the villager body always stands upright
+        return new com.flowpowered.math.vector.Vector2f(rot.getX(), 0f);
+    }
 }

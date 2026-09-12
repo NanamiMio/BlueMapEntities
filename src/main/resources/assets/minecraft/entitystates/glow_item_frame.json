@@ -1,5 +1,5 @@
 {
   "parts": [
-    { "model": "minecraft:entity/item_frame/glow_item_frame" }
+    { "renderer": "minecraft:glow_item_frame" }
   ]
 }

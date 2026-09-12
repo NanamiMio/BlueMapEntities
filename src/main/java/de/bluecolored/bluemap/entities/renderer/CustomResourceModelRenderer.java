@@ -118,7 +118,7 @@ public class CustomResourceModelRenderer implements EntityRenderer {
         ) return;
 
         // render model
-        int modelStart = this.tileModel.getStart();
+        int modelStart = this.tileModel.getTileModel().size();
 
         Element[] elements = modelResource.getElements();
         if (elements != null) {
