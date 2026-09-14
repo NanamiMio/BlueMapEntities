@@ -231,6 +231,7 @@ class MultiViewRenderer:
                         "depth": depth,
                         "projected": projected,
                         "uv": uv,
+                        "rotation": face_info.get("rotation", 0),
                         "tex_img": tex_img,
                         "light": light,
                         "face_name": face_name,
@@ -248,6 +249,7 @@ class MultiViewRenderer:
         uv = quad["uv"]
         tex_img = quad["tex_img"]
         light = quad["light"]
+        rot_deg = quad.get("rotation", 0) % 360
         
         tw, th = tex_img.size
         u1 = uv[0] / 16.0 * tw
@@ -268,6 +270,13 @@ class MultiViewRenderer:
             crop = crop.transpose(Image.FLIP_LEFT_RIGHT)
         if v1 > v2:
             crop = crop.transpose(Image.FLIP_TOP_BOTTOM)
+            
+        if rot_deg == 90:
+            crop = crop.transpose(Image.ROTATE_270)
+        elif rot_deg == 180:
+            crop = crop.transpose(Image.ROTATE_180)
+        elif rot_deg == 270:
+            crop = crop.transpose(Image.ROTATE_90)
             
         if light < 0.99:
             enhancer = Image.new("RGBA", crop.size, (0, 0, 0, int(255 * (1.0 - light))))
