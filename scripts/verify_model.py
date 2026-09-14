@@ -82,6 +82,42 @@ class ModelVerifier:
         return issues
 
 
+
+def rotate_point(p, origin, axis, angle_deg):
+    ox, oy, oz = origin
+    rad = math.radians(angle_deg)
+    cos_a = math.cos(rad)
+    sin_a = math.sin(rad)
+    x, y, z = p[0] - ox, p[1] - oy, p[2] - oz
+    if axis == 'x':
+        rx = x
+        ry = y * cos_a - z * sin_a
+        rz = y * sin_a + z * cos_a
+    elif axis == 'y':
+        rx = x * cos_a + z * sin_a
+        ry = y
+        rz = -x * sin_a + z * cos_a
+    elif axis == 'z':
+        rx = x * cos_a - y * sin_a
+        ry = x * sin_a + y * cos_a
+        rz = z
+    else:
+        rx, ry, rz = x, y, z
+    return [rx + ox, ry + oy, rz + oz]
+
+def rotate_normal(normal, axis, angle_deg):
+    rad = math.radians(angle_deg)
+    cos_a = math.cos(rad)
+    sin_a = math.sin(rad)
+    x, y, z = normal
+    if axis == 'x':
+        return [x, y * cos_a - z * sin_a, y * sin_a + z * cos_a]
+    elif axis == 'y':
+        return [x * cos_a + z * sin_a, y, -x * sin_a + z * cos_a]
+    elif axis == 'z':
+        return [x * cos_a - y * sin_a, x * sin_a + y * cos_a, z]
+    return normal
+
 class MultiViewRenderer:
     """轻量级 3D 贴图正交与透视多视角光栅化渲染器"""
     def __init__(self, canvas_size=(1000, 800), bg_color=(30, 32, 36, 255)):
@@ -143,7 +179,7 @@ class MultiViewRenderer:
                 p_to = elem["to"]
                 x1, y1, z1 = p_from
                 x2, y2, z2 = p_to
-                
+                rot = elem.get("rotation")
                 faces = elem.get("faces", {})
                 
                 # 面定义：(顶点列表, 法向量, 光照强度)
@@ -190,15 +226,23 @@ class MultiViewRenderer:
                     if not uv or not tex_img:
                         continue
                     
+                    cur_verts = vertices
+                    cur_normal = normal
+                    if rot:
+                        origin = rot.get("origin", [0, 0, 0])
+                        axis = rot.get("axis", "x")
+                        angle = rot.get("angle", 0)
+                        cur_verts = [rotate_point(v, origin, axis, angle) for v in vertices]
+                        cur_normal = rotate_normal(normal, axis, angle)
+
                     # 3D 面法向背面剔除 (Back-face Culling)
-                    # dot(normal, view_dir) < 0 表示面朝向相机
-                    dot = normal[0] * v_dir[0] + normal[1] * v_dir[1] + normal[2] * v_dir[2]
+                    dot = cur_normal[0] * v_dir[0] + cur_normal[1] * v_dir[1] + cur_normal[2] * v_dir[2]
                     if dot >= 0:
                         continue
                     
                     projected = []
                     depth = 0
-                    for vx, vy, vz in vertices:
+                    for vx, vy, vz in cur_verts:
                         if mode == "front":
                             # 相机在北朝南看：-X 在左，+X 在右，+Y 在上
                             sx = center_x + vx * scale
@@ -225,7 +269,7 @@ class MultiViewRenderer:
                         projected.append((sx, sy))
                         depth += d
                     
-                    depth /= len(vertices)
+                    depth /= len(cur_verts)
                     
                     quads.append({
                         "depth": depth,
@@ -437,8 +481,42 @@ def verify_and_render_farmer_villager():
     preview_img.save(out_file)
     print(f"✅ 生成农夫村民离线四重视角预览图: {out_file}")
 
+
+def verify_and_render_wolf():
+    verifier = ModelVerifier()
+    wolf_sitting_path = MODELS_DIR / "wolf/wolf_sitting.json"
+    with open(wolf_sitting_path, "r", encoding="utf-8") as f:
+        wolf_data = json.load(f)
+        
+    print(f"\n================ 检验坐姿狼模型: {wolf_sitting_path.name} ================")
+    uv_issues = verifier.check_uv_range(wolf_data, "wolf_sitting")
+    if uv_issues:
+        print(f"❌ 发现 {len(uv_issues)} 处 UV 越界:")
+        for issue in uv_issues:
+            print("  ", issue)
+    else:
+        print("✅ UV 范围检查 PASS: 所有 UV 均在 [0.0, 16.0] 内")
+        
+    tex_wolf = Image.open(TEXTURES_DIR / "entity/wolf/wolf_tame.png").convert("RGBA")
+    tex_map = {"0": tex_wolf}
+    
+    sample_issues = verifier.check_texture_sampling(wolf_data, tex_map)
+    if sample_issues:
+        print(f"⚠️ 贴图采样提示 ({len(sample_issues)}):")
+        for issue in sample_issues:
+            print("  ", issue)
+    else:
+        print("✅ 贴图采样检查 PASS")
+        
+    renderer = MultiViewRenderer()
+    preview_img = renderer.render_views([(wolf_data, tex_map)], title="Wolf Sitting (Tame) 4-View Preview")
+    out_file = OUTPUT_DIR / "preview_wolf_sitting.png"
+    preview_img.save(out_file)
+    print(f"✅ 生成坐姿狼离线四重视角预览图: {out_file}")
+
 if __name__ == "__main__":
     verify_and_render_villager()
+    verify_and_render_wolf()
     verify_and_render_farmer_villager()
     verify_and_render_armor_stand()
     verify_and_render_armor_set()
