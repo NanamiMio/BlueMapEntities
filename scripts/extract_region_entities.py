@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-Minecraft 1.16.5 / 1.12.2 Region 实体提取与 1.17+ 格式桥接转换器
+Minecraft 1.16.5 / 1.12.2 Region 实体提取与 1.17+ 格式桥接转换器 (高性能并发版)
 用于将旧版 region/*.mca 中内置的 Level.Entities 提取并打包为标准的 entities/*.mca
 使得 BlueMap 5.12 及 BlueMapEntities 能够无缝读取并以 3D 渲染旧周目的实体！
 """
 
 import os, sys, glob, zlib, struct, io
+from concurrent.futures import ProcessPoolExecutor
 
 class NBTStream:
     def __init__(self, data):
@@ -86,47 +87,32 @@ def write_tag(stream, t, val, name=None):
             stream.write(struct.pack('>q', x))
 
 def serialize_entity_chunk(data_version, x_pos, z_pos, entities_sub_t, entities_list):
-    """序列化为 1.17+ 格式的 Entity Chunk Compound"""
     root = {
         'DataVersion': (3, data_version),
         'Position': (11, [x_pos, z_pos]),
         'Entities': (9, (entities_sub_t, entities_list))
     }
     buf = io.BytesIO()
-    # root tag 10, name ''
     buf.write(b'\x0a\x00\x00')
     for k, (t, v) in root.items():
         write_tag(buf, t, v, k)
     buf.write(b'\x00')
     return buf.getvalue()
 
-def process_world(world_path):
-    region_dir = os.path.join(world_path, 'region')
-    if not os.path.isdir(region_dir):
-        print(f"[SKIP] {world_path}: No region directory")
-        return
-
-    entities_dir = os.path.join(world_path, 'entities')
-    os.makedirs(entities_dir, exist_ok=True)
-
-    mca_files = glob.glob(os.path.join(region_dir, '*.mca'))
-    print(f"[PROCESS] {world_path}: {len(mca_files)} mca files found in region/")
-
-    converted_regions = 0
-    total_entities = 0
-
-    for mca_path in mca_files:
-        base_name = os.path.basename(mca_path)
-        out_mca_path = os.path.join(entities_dir, base_name)
-        
-        # 读取 region mca
+def process_single_mca(args):
+    mca_path, entities_dir = args
+    base_name = os.path.basename(mca_path)
+    out_mca_path = os.path.join(entities_dir, base_name)
+    
+    try:
         with open(mca_path, 'rb') as f:
             header = f.read(8192)
-            if len(header) < 8192: continue
+            if len(header) < 8192: return 0, 0
             locations = [struct.unpack('>I', header[i*4:i*4+4])[0] for i in range(1024)]
             timestamps = [struct.unpack('>I', header[4096+i*4:4096+i*4+4])[0] for i in range(1024)]
 
-            new_chunks_data = {} # chunk_index -> compressed_bytes
+            new_chunks_data = {}
+            ent_count = 0
             
             for i, loc in enumerate(locations):
                 if loc == 0: continue
@@ -138,13 +124,12 @@ def process_world(world_path):
                 chunk_len = struct.unpack('>I', chunk_hdr[:4])[0]
                 comp_type = chunk_hdr[4]
                 raw = f.read(chunk_len - 1)
-                if comp_type != 2: continue # 只处理 zlib
+                if comp_type != 2: continue
 
                 try:
                     decomp = zlib.decompress(raw)
                     if b'Entities' not in decomp: continue
 
-                    # 解析 NBT
                     nl = struct.unpack('>H', decomp[1:3])[0]
                     payload = decomp[3+nl:]
                     parsed = NBTStream(payload).read_tag(10)
@@ -160,20 +145,17 @@ def process_world(world_path):
                         x_pos = level.get('xPos', (3, 0))[1]
                         z_pos = level.get('zPos', (3, 0))[1]
 
-                        # 序列化为新格式
                         new_nbt = serialize_entity_chunk(data_version, x_pos, z_pos, ents_sub_t, ents_list)
                         comp = zlib.compress(new_nbt)
                         new_chunks_data[i] = (comp, timestamps[i])
-                        total_entities += len(ents_list)
-                except Exception as e:
+                        ent_count += len(ents_list)
+                except:
                     pass
 
-        # 如果这个 region 里有实体，打包生成 entities/*.mca
         if new_chunks_data:
             out_locations = [0] * 1024
             out_timestamps = [0] * 1024
-            
-            sectors = [bytearray(4096), bytearray(4096)] # 0: loc table, 1: time table
+            sectors = [bytearray(4096), bytearray(4096)]
             curr_sector = 2
 
             for i in range(1024):
@@ -189,7 +171,6 @@ def process_world(world_path):
                     out_timestamps[i] = ts
                     curr_sector += sector_count
 
-            # 写回 header
             loc_buf = io.BytesIO()
             for loc in out_locations:
                 loc_buf.write(struct.pack('>I', loc))
@@ -204,11 +185,40 @@ def process_world(world_path):
                 for sec in sectors:
                     out_f.write(sec)
             
-            converted_regions += 1
+            return 1, ent_count
+    except Exception as e:
+        pass
 
-    print(f"[DONE] {world_path}: Converted {converted_regions} region files into entities/ (Total {total_entities} entities extracted!)")
+    return 0, 0
+
+def process_world(world_path, filter_pattern=None):
+    region_dir = os.path.join(world_path, 'region')
+    if not os.path.isdir(region_dir):
+        print(f"[SKIP] {world_path}: No region directory")
+        return
+
+    entities_dir = os.path.join(world_path, 'entities')
+    os.makedirs(entities_dir, exist_ok=True)
+
+    if filter_pattern:
+        mca_files = glob.glob(os.path.join(region_dir, filter_pattern))
+    else:
+        mca_files = glob.glob(os.path.join(region_dir, '*.mca'))
+
+    print(f"[PROCESS] {world_path}: Converting {len(mca_files)} mca files using multiprocessing...")
+    tasks = [(mca, entities_dir) for mca in mca_files]
+
+    total_conv = 0
+    total_ents = 0
+
+    with ProcessPoolExecutor(max_workers=os.cpu_count() or 4) as pool:
+        for c, e in pool.map(process_single_mca, tasks):
+            total_conv += c
+            total_ents += e
+
+    print(f"[DONE] {world_path}: Converted {total_conv} region files (Total {total_ents} entities extracted into entities/)")
 
 if __name__ == '__main__':
-    targets = sys.argv[1:] if len(sys.argv) > 1 else ['/home/mio/mc/v1/world']
-    for t in targets:
-        process_world(t)
+    target = sys.argv[1] if len(sys.argv) > 1 else '/home/mio/mc/v1/world'
+    pat = sys.argv[2] if len(sys.argv) > 2 else None
+    process_world(target, pat)
