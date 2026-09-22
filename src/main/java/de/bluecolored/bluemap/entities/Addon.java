@@ -74,6 +74,12 @@ public class Addon implements Runnable {
         EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("spider"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
         EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("cave_spider"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
         EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("wandering_trader"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("slime"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("magma_cube"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft("turtle"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(new Key("guardvillagers", "guard"), de.bluecolored.bluemap.entities.entity.Villager.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(new Key("guardvillagers", "guard_villager"), de.bluecolored.bluemap.entities.entity.Villager.class));
+        EntityType.REGISTRY.register(new EntityType.Impl(new Key("illagers_plus", "frostmancer"), de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class));
 
 
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("llama"), LlamaRenderer::new));
@@ -135,6 +141,12 @@ public class Addon implements Runnable {
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("spider"), CustomResourceModelRenderer::new));
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("cave_spider"), CustomResourceModelRenderer::new));
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("wandering_trader"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("slime"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("magma_cube"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("turtle"), CustomResourceModelRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(new Key("guardvillagers", "guard"), VillagerRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(new Key("guardvillagers", "guard_villager"), VillagerRenderer::new));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(new Key("illagers_plus", "frostmancer"), CustomResourceModelRenderer::new));
 
         // Install Sign Renderer interceptor
         try {

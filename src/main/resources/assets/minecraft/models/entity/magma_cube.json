@@ -1,0 +1,35 @@
+{
+  "credit": "BlueMapEntities Extension",
+  "texture_size": [64, 32],
+  "textures": {
+    "0": "entity/slime/magmacube"
+  },
+  "elements": [
+    {
+      "name": "body",
+      "from": [-4, 0, -4],
+      "to": [4, 8, 4],
+      "faces": {
+        "north": {"uv": [2, 4, 4, 8], "texture": "#0"},
+        "east": {"uv": [0, 4, 2, 8], "texture": "#0"},
+        "south": {"uv": [6, 4, 8, 8], "texture": "#0"},
+        "west": {"uv": [4, 4, 6, 8], "texture": "#0"},
+        "up": {"uv": [4, 4, 2, 0], "texture": "#0"},
+        "down": {"uv": [6, 0, 4, 4], "texture": "#0"}
+      }
+    },
+    {
+      "name": "core",
+      "from": [-2, 2, -2],
+      "to": [2, 6, 2],
+      "faces": {
+        "north": {"uv": [1, 10, 2, 12], "texture": "#0"},
+        "east": {"uv": [0, 10, 1, 12], "texture": "#0"},
+        "south": {"uv": [3, 10, 4, 12], "texture": "#0"},
+        "west": {"uv": [2, 10, 3, 12], "texture": "#0"},
+        "up": {"uv": [2, 10, 1, 8], "texture": "#0"},
+        "down": {"uv": [3, 8, 2, 10], "texture": "#0"}
+      }
+    }
+  ]
+}
