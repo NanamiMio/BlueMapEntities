@@ -1,0 +1,87 @@
+{
+  "credit": "BlueMapEntities Extension",
+  "texture_size": [64, 32],
+  "textures": {
+    "0": "entity/creeper/creeper"
+  },
+  "elements": [
+    {
+      "name": "head",
+      "from": [-4, 18, -4],
+      "to": [4, 26, 4],
+      "faces": {
+        "north": {"uv": [2, 4, 4, 8], "texture": "#0"},
+        "east": {"uv": [0, 4, 2, 8], "texture": "#0"},
+        "south": {"uv": [6, 4, 8, 8], "texture": "#0"},
+        "west": {"uv": [4, 4, 6, 8], "texture": "#0"},
+        "up": {"uv": [4, 4, 2, 0], "texture": "#0"},
+        "down": {"uv": [6, 0, 4, 4], "texture": "#0"}
+      }
+    },
+    {
+      "name": "body",
+      "from": [-4, 6, -2],
+      "to": [4, 18, 2],
+      "faces": {
+        "north": {"uv": [5, 10, 7, 16], "texture": "#0"},
+        "east": {"uv": [4, 10, 5, 16], "texture": "#0"},
+        "south": {"uv": [8, 10, 10, 16], "texture": "#0"},
+        "west": {"uv": [7, 10, 8, 16], "texture": "#0"},
+        "up": {"uv": [7, 10, 5, 8], "texture": "#0"},
+        "down": {"uv": [9, 8, 7, 10], "texture": "#0"}
+      }
+    },
+    {
+      "name": "leg_front_left",
+      "from": [-4, 0, -6],
+      "to": [0, 6, -2],
+      "faces": {
+        "north": {"uv": [1, 11, 2, 14], "texture": "#0"},
+        "east": {"uv": [0, 11, 1, 14], "texture": "#0"},
+        "south": {"uv": [3, 11, 4, 14], "texture": "#0"},
+        "west": {"uv": [2, 11, 3, 14], "texture": "#0"},
+        "up": {"uv": [2, 11, 1, 10], "texture": "#0"},
+        "down": {"uv": [3, 10, 2, 11], "texture": "#0"}
+      }
+    },
+    {
+      "name": "leg_front_right",
+      "from": [0, 0, -6],
+      "to": [4, 6, -2],
+      "faces": {
+        "north": {"uv": [1, 11, 2, 14], "texture": "#0"},
+        "east": {"uv": [0, 11, 1, 14], "texture": "#0"},
+        "south": {"uv": [3, 11, 4, 14], "texture": "#0"},
+        "west": {"uv": [2, 11, 3, 14], "texture": "#0"},
+        "up": {"uv": [2, 11, 1, 10], "texture": "#0"},
+        "down": {"uv": [3, 10, 2, 11], "texture": "#0"}
+      }
+    },
+    {
+      "name": "leg_back_left",
+      "from": [-4, 0, 2],
+      "to": [0, 6, 6],
+      "faces": {
+        "north": {"uv": [1, 11, 2, 14], "texture": "#0"},
+        "east": {"uv": [0, 11, 1, 14], "texture": "#0"},
+        "south": {"uv": [3, 11, 4, 14], "texture": "#0"},
+        "west": {"uv": [2, 11, 3, 14], "texture": "#0"},
+        "up": {"uv": [2, 11, 1, 10], "texture": "#0"},
+        "down": {"uv": [3, 10, 2, 11], "texture": "#0"}
+      }
+    },
+    {
+      "name": "leg_back_right",
+      "from": [0, 0, 2],
+      "to": [4, 6, 6],
+      "faces": {
+        "north": {"uv": [1, 11, 2, 14], "texture": "#0"},
+        "east": {"uv": [0, 11, 1, 14], "texture": "#0"},
+        "south": {"uv": [3, 11, 4, 14], "texture": "#0"},
+        "west": {"uv": [2, 11, 3, 14], "texture": "#0"},
+        "up": {"uv": [2, 11, 1, 10], "texture": "#0"},
+        "down": {"uv": [3, 10, 2, 11], "texture": "#0"}
+      }
+    }
+  ]
+}
