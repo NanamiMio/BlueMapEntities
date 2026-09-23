@@ -181,6 +181,15 @@ public class CustomResourceModelRenderer implements EntityRenderer {
         Face face = element.getFaces().get(faceDir);
         if (face == null) return;
 
+        // ####### texture
+        ResourcePath<Texture> texturePath = face.getTexture().getTexturePath(modelResource.getTextures()::get);
+        int textureId = textureGallery.get(texturePath);
+        if (textureId == 0) {
+            String rawRef = face.getTexture().isReference() ? face.getTexture().getReferenceName() : "no_ref";
+            System.out.println("[DEBUG_FACE_ZERO] Dropping face! rawRef=" + rawRef + ", texPath=" + (texturePath != null ? texturePath.getFormatted() : "null"));
+            return;
+        }
+
         // initialize the faces
         tileModel.initialize();
         tileModel.add(2);
@@ -201,16 +210,8 @@ public class CustomResourceModelRenderer implements EntityRenderer {
                 c3.x, c3.y, c3.z
         );
 
-        // ####### texture
-        ResourcePath<Texture> texturePath = face.getTexture().getTexturePath(modelResource.getTextures()::get);
-        int textureId = textureGallery.get(texturePath);
         if (texturePath != null && texturePath.getValue().contains("llama")) {
             System.out.println("[DEBUG_FACE] llama face: texPath=" + texturePath.getFormatted() + " -> textureId=" + textureId);
-        } else if (textureId == 0) {
-            String rawRef = face.getTexture().isReference() ? face.getTexture().getReferenceName() : "no_ref";
-            if (rawRef.contains("0") || rawRef.contains("llama") || (texturePath != null && texturePath.getValue().contains("llama"))) {
-                System.out.println("[DEBUG_FACE_ZERO] texId=0! rawRef=" + rawRef + ", texPath=" + (texturePath != null ? texturePath.getFormatted() : "null") + ", modelTex=" + modelResource.getTextures());
-            }
         }
         tileModel.setMaterialIndex(face1, textureId);
         tileModel.setMaterialIndex(face2, textureId);
