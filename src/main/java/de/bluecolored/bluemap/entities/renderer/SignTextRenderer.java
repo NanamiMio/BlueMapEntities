@@ -114,7 +114,7 @@ public class SignTextRenderer {
     }
 
     private int getWhiteMaterial() {
-        if (whiteMaterialIndex >= 0) return whiteMaterialIndex;
+        if (whiteMaterialIndex > 0) return whiteMaterialIndex;
         try {
             whiteMaterialIndex = textureGallery.get(new ResourcePath<>(Key.MINECRAFT_NAMESPACE, "block/white_concrete"));
             if (whiteMaterialIndex <= 0) {
@@ -124,18 +124,28 @@ public class SignTextRenderer {
                 whiteMaterialIndex = textureGallery.get(new ResourcePath<>(Key.MINECRAFT_NAMESPACE, "block/white_wool"));
             }
             if (whiteMaterialIndex <= 0) {
-                whiteMaterialIndex = 0;
+                whiteMaterialIndex = textureGallery.get(new ResourcePath<>(Key.MINECRAFT_NAMESPACE, "block/stone"));
+            }
+            if (whiteMaterialIndex <= 0) {
+                whiteMaterialIndex = textureGallery.get(new ResourcePath<>(Key.MINECRAFT_NAMESPACE, "block/oak_planks"));
+            }
+            if (whiteMaterialIndex <= 0) {
+                whiteMaterialIndex = -1;
             }
         } catch (Exception e) {
-            whiteMaterialIndex = 0;
+            whiteMaterialIndex = -1;
         }
         return whiteMaterialIndex;
     }
 
     public void renderSign(BlockNeighborhood block, Variant variant, TileModelView tileModel) {
+        int matIndex = getWhiteMaterial();
+        if (matIndex <= 0) return;
+
         BlockState state = block.getBlockState();
         String path = state.getId().getValue();
         boolean isWallSign = path.contains("wall_sign");
+        boolean isHangingSign = path.contains("hanging_sign");
 
         List<String> lines = new ArrayList<>();
         String colorName = "black";
@@ -185,8 +195,19 @@ public class SignTextRenderer {
         // Coordinates are in local block space [0..1]
         // Wall sign board: height 0.5 (y: 0.2708..0.7708, center: 0.5208), front face z = 1.75/16 + 0.003
         // Standing sign board: height 0.5 (y: 0.5833..1.0833, center: 0.8333), front face z = 8.75/16 + 0.003
-        float zPos = isWallSign ? (1.75f + 0.05f) / 16.0f : (8.75f + 0.05f) / 16.0f;
-        float yCenter = isWallSign ? (4.333f + 12.333f) / 2.0f / 16.0f : (9.333f + 17.333f) / 2.0f / 16.0f;
+        // Hanging sign board: height 10/16 (y: 0..10/16, center: 5/16), front face z = 9/16 + 0.05/16
+        float zPos;
+        float yCenter;
+        if (isHangingSign) {
+            zPos = (9.0f + 0.05f) / 16.0f;
+            yCenter = 5.0f / 16.0f;
+        } else if (isWallSign) {
+            zPos = (1.75f + 0.05f) / 16.0f;
+            yCenter = (4.333f + 12.333f) / 2.0f / 16.0f;
+        } else {
+            zPos = (8.75f + 0.05f) / 16.0f;
+            yCenter = (9.333f + 17.333f) / 2.0f / 16.0f;
+        }
         float textWidth = 12.0f / 16.0f;   // 0.75f block width
         float textHeight = 6.0f / 16.0f;  // 0.375f block height
         float xMin = 0.5f - textWidth / 2.0f;
@@ -196,7 +217,6 @@ public class SignTextRenderer {
         float[] rgb = DYE_COLORS.getOrDefault(colorName.toLowerCase(Locale.ROOT), DYE_COLORS.get("black"));
         int sunlight = glowing ? 15 : block.getLightData().getSkyLight();
         int blocklight = glowing ? 15 : block.getLightData().getBlockLight();
-        int matIndex = getWhiteMaterial();
 
         int faceCount = quads.size() * 2; // 2 triangles per quad
         int startIndex = tileModel.add(faceCount);
