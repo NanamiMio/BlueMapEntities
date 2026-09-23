@@ -222,7 +222,7 @@ public class Addon implements Runnable {
         }
     }
 
-    private static void registerLegacy(String legacyName, Class<? extends de.bluecolored.bluemap.core.world.mca.entity.MCAEntity> entityClass, EntityRendererType.RendererSupplier supplier) {
+    private static void registerLegacy(String legacyName, Class<? extends de.bluecolored.bluemap.core.world.mca.entity.MCAEntity> entityClass, de.bluecolored.bluemap.core.map.hires.entity.EntityRendererFactory supplier) {
         EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft(legacyName), entityClass));
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft(legacyName), supplier));
     }
