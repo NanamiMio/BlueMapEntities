@@ -1,5 +1,7 @@
 {
   "parts": [
-    { "renderer": "minecraft:sheep" }
+    {
+      "renderer": "minecraft:sheep"
+    }
   ]
 }

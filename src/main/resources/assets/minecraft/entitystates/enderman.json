@@ -1,5 +1,7 @@
 {
   "parts": [
-    { "renderer": "minecraft:enderman" }
+    {
+      "renderer": "minecraft:enderman"
+    }
   ]
 }

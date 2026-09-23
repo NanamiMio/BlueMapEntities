@@ -1,5 +1,7 @@
 {
   "parts": [
-    { "renderer": "minecraft:wolf" }
+    {
+      "renderer": "minecraft:wolf"
+    }
   ]
 }

@@ -1,5 +1,7 @@
 {
   "parts": [
-    { "renderer": "minecraft:llama" }
+    {
+      "renderer": "minecraft:llama"
+    }
   ]
 }

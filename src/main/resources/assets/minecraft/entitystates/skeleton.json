@@ -1,5 +1,7 @@
 {
   "parts": [
-    { "renderer": "minecraft:skeleton" }
+    {
+      "renderer": "minecraft:skeleton"
+    }
   ]
 }

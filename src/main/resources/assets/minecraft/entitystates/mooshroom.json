@@ -1,5 +1,7 @@
 {
   "parts": [
-    { "model": "minecraft:entity/cow/mooshroom" }
+    {
+      "renderer": "minecraft:mooshroom"
+    }
   ]
 }

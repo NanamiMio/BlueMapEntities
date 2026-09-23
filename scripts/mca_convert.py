@@ -446,7 +446,66 @@ def pack_block_states(indices, bpe):
         longs.append(val)
     return longs
 
-def convert_section_1710_to_116(sec_compound, mod_block_map):
+def get_block_properties(bname):
+    props = {}
+    if bname in ("minecraft:grass_block", "minecraft:podzol", "minecraft:mycelium"):
+        props["snowy"] = "false"
+    elif any(bname.endswith(suffix) for suffix in ("_log", "_wood", "_stem", "_hyphae", "pillar")):
+        props["axis"] = "y"
+    elif any(bname.endswith(suffix) for suffix in ("_leaves",)):
+        props["distance"] = "1"
+        props["persistent"] = "true"
+    elif any(bname.endswith(suffix) for suffix in ("_slab",)):
+        props["type"] = "bottom"
+        props["waterlogged"] = "false"
+    elif any(bname.endswith(suffix) for suffix in ("_stairs",)):
+        props["facing"] = "north"
+        props["half"] = "bottom"
+        props["shape"] = "straight"
+        props["waterlogged"] = "false"
+    elif any(bname.endswith(suffix) for suffix in ("_fence",)):
+        props["north"] = "false"
+        props["east"] = "false"
+        props["south"] = "false"
+        props["west"] = "false"
+        props["waterlogged"] = "false"
+    elif any(bname.endswith(suffix) for suffix in ("_fence_gate",)):
+        props["facing"] = "north"
+        props["in_wall"] = "false"
+        props["open"] = "false"
+        props["powered"] = "false"
+    elif any(bname.endswith(suffix) for suffix in ("_wall",)):
+        props["up"] = "true"
+        props["north"] = "none"
+        props["east"] = "none"
+        props["south"] = "none"
+        props["west"] = "none"
+        props["waterlogged"] = "false"
+    elif bname == "minecraft:snow":
+        props["layers"] = "1"
+    elif bname in ("minecraft:lantern", "minecraft:soul_lantern"):
+        props["hanging"] = "false"
+        props["waterlogged"] = "false"
+    elif bname == "minecraft:chain":
+        props["axis"] = "y"
+        props["waterlogged"] = "false"
+    return props
+
+def pack_heightmap(heights):
+    longs = []
+    idx = 0
+    for _ in range(37):
+        val = 0
+        for i in range(7):
+            if idx < 256:
+                h_val = min(256, max(0, heights[idx] + 1))
+                val |= (h_val & 0x1FF) << (i * 9)
+                idx += 1
+        if val >= (1 << 63): val -= (1 << 64)
+        longs.append(val)
+    return longs
+
+def convert_section_1710_to_116(sec_compound, mod_block_map, height_map=None):
     if 'Blocks' not in sec_compound: return sec_compound
     blocks = sec_compound['Blocks'][1]
     data = sec_compound['Data'][1] if 'Data' in sec_compound else bytearray(2048)
@@ -481,7 +540,14 @@ def convert_section_1710_to_116(sec_compound, mod_block_map):
             unique_ids.append(bname)
         indices.append(palette_map[bname])
 
-    palette_items = [{'Name': (TAG_STRING, name)} for name in unique_ids]
+    palette_items = []
+    for name in unique_ids:
+        item = {'Name': (TAG_STRING, name)}
+        props = get_block_properties(name)
+        if props:
+            item['Properties'] = (TAG_COMPOUND, {k: (TAG_STRING, v) for k, v in props.items()})
+        palette_items.append(item)
+
     bpe = max(4, math.ceil(math.log2(len(unique_ids)))) if len(unique_ids) > 1 else 4
     block_states = pack_block_states(indices, bpe)
 
@@ -490,8 +556,35 @@ def convert_section_1710_to_116(sec_compound, mod_block_map):
         'Palette': (TAG_LIST, {'type': TAG_COMPOUND, 'items': palette_items}),
         'BlockStates': (TAG_LONG_ARRAY, block_states)
     }
-    if 'BlockLight' in sec_compound: new_sec['BlockLight'] = sec_compound['BlockLight']
-    if 'SkyLight' in sec_compound: new_sec['SkyLight'] = sec_compound['SkyLight']
+    if 'BlockLight' in sec_compound:
+        new_sec['BlockLight'] = sec_compound['BlockLight']
+    else:
+        new_sec['BlockLight'] = (TAG_BYTE_ARRAY, bytearray(2048))
+
+    # 构建并补齐 SkyLight
+    raw_skylight = sec_compound['SkyLight'][1] if 'SkyLight' in sec_compound else None
+    skylight = bytearray(2048)
+    if raw_skylight and len(raw_skylight) == 2048:
+        skylight[:] = raw_skylight
+
+    sec_y = y_val * 16
+    if height_map and len(height_map) == 256:
+        for lz in range(16):
+            for lx in range(16):
+                surf_h = height_map[lz * 16 + lx]
+                for ly in range(16):
+                    wy = sec_y + ly
+                    if wy >= surf_h:
+                        idx = ly * 256 + lz * 16 + lx
+                        b_idx = idx >> 1
+                        if (idx & 1) == 0:
+                            skylight[b_idx] = (skylight[b_idx] & 0xF0) | 0x0F
+                        else:
+                            skylight[b_idx] = (skylight[b_idx] & 0x0F) | 0xF0
+    elif sec_y >= 64:
+        skylight[:] = bytes([0xFF] * 2048)
+
+    new_sec['SkyLight'] = (TAG_BYTE_ARRAY, skylight)
     return new_sec
 
 def convert_chunk_1710_to_116(decompressed_data, mod_block_map):
@@ -505,9 +598,19 @@ def convert_chunk_1710_to_116(decompressed_data, mod_block_map):
     root_data['DataVersion'] = (TAG_INT, 2586)
     level_compound['Status'] = (TAG_STRING, 'full')
 
+    height_map = None
+    if 'HeightMap' in level_compound and len(level_compound['HeightMap'][1]) == 256:
+        height_map = level_compound['HeightMap'][1]
+        packed_hm = pack_heightmap(height_map)
+        level_compound['Heightmaps'] = (TAG_COMPOUND, {
+            'MOTION_BLOCKING': (TAG_LONG_ARRAY, packed_hm),
+            'WORLD_SURFACE': (TAG_LONG_ARRAY, packed_hm),
+            'OCEAN_FLOOR': (TAG_LONG_ARRAY, packed_hm)
+        })
+
     if 'Sections' in level_compound:
         sec_list = level_compound['Sections'][1]['items']
-        new_sec_list = [convert_section_1710_to_116(sec, mod_block_map) for sec in sec_list]
+        new_sec_list = [convert_section_1710_to_116(sec, mod_block_map, height_map) for sec in sec_list]
         level_compound['Sections'] = (TAG_LIST, {'type': TAG_COMPOUND, 'items': new_sec_list})
 
     # 规范化 1.7.10 PascalCase 实体 ID

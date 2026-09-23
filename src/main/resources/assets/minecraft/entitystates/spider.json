@@ -1,5 +1,7 @@
 {
   "parts": [
-    { "renderer": "minecraft:spider" }
+    {
+      "renderer": "minecraft:spider"
+    }
   ]
 }

@@ -1,5 +1,7 @@
 {
   "parts": [
-    { "model": "minecraft:entity/bat" }
+    {
+      "renderer": "minecraft:bat"
+    }
   ]
 }

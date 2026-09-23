@@ -1,5 +1,7 @@
 {
   "parts": [
-    { "renderer": "minecraft:squid" }
+    {
+      "renderer": "minecraft:squid"
+    }
   ]
 }

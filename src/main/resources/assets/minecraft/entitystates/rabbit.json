@@ -1,5 +1,7 @@
 {
   "parts": [
-    { "model": "minecraft:entity/rabbit/rabbit" }
+    {
+      "renderer": "minecraft:rabbit"
+    }
   ]
 }
