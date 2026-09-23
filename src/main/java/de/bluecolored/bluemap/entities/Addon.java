@@ -162,6 +162,30 @@ public class Addon implements Runnable {
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("evoker"), CustomResourceModelRenderer::new));
         EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft("zombie_villager"), CustomResourceModelRenderer::new));
 
+        // Legacy 1.7.10 / 1.10 PascalCase entity mappings
+        registerLegacy("Cow", AgeVariantEntity.class, CowRenderer::new);
+        registerLegacy("Sheep", Sheep.class, SheepRenderer::new);
+        registerLegacy("Pig", Pig.class, PigRenderer::new);
+        registerLegacy("Chicken", AgeVariantEntity.class, ChickenRenderer::new);
+        registerLegacy("Wolf", Wolf.class, WolfRenderer::new);
+        registerLegacy("Villager", Villager.class, VillagerRenderer::new);
+        registerLegacy("Zombie", Zombie.class, ZombieRenderer::new);
+        registerLegacy("Skeleton", Skeleton.class, SkeletonRenderer::new);
+        registerLegacy("Spider", de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class, CustomResourceModelRenderer::new);
+        registerLegacy("Creeper", de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class, CustomResourceModelRenderer::new);
+        registerLegacy("Enderman", de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class, CustomResourceModelRenderer::new);
+        registerLegacy("Bat", de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class, CustomResourceModelRenderer::new);
+        registerLegacy("Squid", Squid.class, SquidRenderer::new);
+        registerLegacy("Ozelot", Ocelot.class, OcelotRenderer::new);
+        registerLegacy("EntityHorse", Horse.class, HorseRenderer::new);
+        registerLegacy("MushroomCow", AgeVariantEntity.class, CustomResourceModelRenderer::new);
+        registerLegacy("Slime", de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class, CustomResourceModelRenderer::new);
+        registerLegacy("LavaSlime", de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class, CustomResourceModelRenderer::new);
+        registerLegacy("ArmorStand", ArmorStand.class, ArmorStandRenderer::new);
+        registerLegacy("Boat", de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class, CustomResourceModelRenderer::new);
+        registerLegacy("MinecartRideable", de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class, CustomResourceModelRenderer::new);
+        registerLegacy("MinecartChest", de.bluecolored.bluemap.core.world.mca.entity.MCAEntity.class, CustomResourceModelRenderer::new);
+
         // Install Sign Renderer interceptor
         try {
             de.bluecolored.bluemap.core.map.hires.block.BlockRendererType originalDefault = de.bluecolored.bluemap.core.map.hires.block.BlockRendererType.DEFAULT;
@@ -196,6 +220,11 @@ public class Addon implements Runnable {
         } catch (Throwable t) {
             LOGGER.log(java.util.logging.Level.WARNING, "Failed to hook BlockRendererType.DEFAULT", t);
         }
+    }
+
+    private static void registerLegacy(String legacyName, Class<? extends de.bluecolored.bluemap.core.world.mca.entity.MCAEntity> entityClass, EntityRendererType.RendererSupplier supplier) {
+        EntityType.REGISTRY.register(new EntityType.Impl(Key.minecraft(legacyName), entityClass));
+        EntityRendererType.REGISTRY.register(new EntityRendererType.Impl(Key.minecraft(legacyName), supplier));
     }
 
 }
