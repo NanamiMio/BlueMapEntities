@@ -1,0 +1,79 @@
+{
+  "credit": "cake Block Model for Item Frame",
+  "textures": {
+    "top": "block/cake_top",
+    "bottom": "block/cake_bottom",
+    "side": "block/cake_side"
+  },
+  "elements": [
+    {
+      "name": "cake",
+      "from": [
+        -3.5,
+        -3.5,
+        0.41
+      ],
+      "to": [
+        3.5,
+        3.5,
+        1.2
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#top"
+        },
+        "south": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#top"
+        },
+        "east": {
+          "uv": [
+            1,
+            8,
+            15,
+            16
+          ],
+          "texture": "#side"
+        },
+        "west": {
+          "uv": [
+            1,
+            8,
+            15,
+            16
+          ],
+          "texture": "#side"
+        },
+        "up": {
+          "uv": [
+            1,
+            8,
+            15,
+            16
+          ],
+          "texture": "#side"
+        },
+        "down": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#bottom"
+        }
+      }
+    }
+  ]
+}

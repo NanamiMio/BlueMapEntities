@@ -52,8 +52,15 @@ public class PigRenderer extends CustomResourceModelRenderer {
         String modelPath = "entity/pig/" + age + (variant != null && !variant.isEmpty() ? "_" + variant : "");
         ResourcePath<Model> model = new ResourcePath<>(Key.MINECRAFT_NAMESPACE, modelPath);
 
+        Model chosen = model.getResource(getModelProvider());
+        if (chosen == null) {
+            chosen = new ResourcePath<Model>(Key.MINECRAFT_NAMESPACE, "entity/pig/" + age).getResource(getModelProvider());
+        }
+
         // render chosen model
-        super.render(entity, block, model.getResource(getModelProvider()), TintColorProvider.NO_TINT, tileModel);
+        if (chosen != null) {
+            super.render(entity, block, chosen, TintColorProvider.NO_TINT, tileModel);
+        }
 
         // apply part transform
         if (part.isTransformed())

@@ -1,0 +1,41 @@
+{
+  "credit": "stone_sword Item Model for Item Frame",
+  "textures": {
+    "0": "item/stone_sword"
+  },
+  "elements": [
+    {
+      "name": "item",
+      "from": [
+        -4.0,
+        -4.0,
+        0.42
+      ],
+      "to": [
+        4.0,
+        4.0,
+        0.45
+      ],
+      "faces": {
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#0"
+        },
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}
