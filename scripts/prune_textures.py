@@ -40,11 +40,16 @@ def prune_map(map_name, base_dir='/home/mio/mc_portal/web/map/maps'):
     pruned = []
     for idx, item in enumerate(textures):
         if idx in used_indices:
+            c = item.get('color', [1, 1, 1, 1])
+            if c[0] == 0 and c[1] == 0 and c[2] == 0 and not item.get('halfTransparent', False):
+                item = dict(item)
+                item['halfTransparent'] = True
+                item['color'] = [0.0, 0.0, 0.0, 0.0]
             pruned.append(item)
         else:
             pruned.append({
-                'color': item.get('color', [0, 0, 0, 0]),
-                'halfTransparent': item.get('halfTransparent', False),
+                'color': [0, 0, 0, 0],
+                'halfTransparent': True,
                 'texture': BLANK_PNG
             })
 

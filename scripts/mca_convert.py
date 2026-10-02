@@ -387,6 +387,13 @@ def resolve_mod_block(raw_name):
     if 'chest' in low: return "minecraft:chest"
     if 'flower' in low or 'sapling' in low or 'crop' in low: return "minecraft:poppy"
     if 'sand' in low: return "minecraft:sand"
+    if 'water' in low: return "minecraft:water"
+    if 'lava' in low: return "minecraft:lava"
+    if 'ice' in low: return "minecraft:ice"
+    if 'snow' in low: return "minecraft:snow"
+    if 'fence' in low: return "minecraft:oak_fence"
+    if 'cobble' in low: return "minecraft:cobblestone"
+    if 'gravel' in low: return "minecraft:gravel"
 
     return "minecraft:stone"
 
@@ -448,7 +455,11 @@ def pack_block_states(indices, bpe):
 
 def get_block_properties(bname):
     props = {}
-    if bname in ("minecraft:grass_block", "minecraft:podzol", "minecraft:mycelium"):
+    if bname in ("minecraft:water", "minecraft:flowing_water"):
+        props["level"] = "0"
+    elif bname in ("minecraft:lava", "minecraft:flowing_lava"):
+        props["level"] = "0"
+    elif bname in ("minecraft:grass_block", "minecraft:podzol", "minecraft:mycelium"):
         props["snowy"] = "false"
     elif any(bname.endswith(suffix) for suffix in ("_log", "_wood", "_stem", "_hyphae", "pillar")):
         props["axis"] = "y"
@@ -531,7 +542,15 @@ def convert_section_1710_to_116(sec_compound, mod_block_map, height_map=None):
         if full_id == 0:
             bname = "minecraft:air"
         elif full_id in mod_block_map:
-            bname = resolve_mod_block(mod_block_map[full_id])
+            raw_mod_name = mod_block_map[full_id]
+            if raw_mod_name.startswith("minecraft:") or full_id < 256:
+                vanilla_res = resolve_vanilla_1710(full_id, meta)
+                if vanilla_res != "minecraft:stone" or "stone" in raw_mod_name:
+                    bname = vanilla_res
+                else:
+                    bname = resolve_mod_block(raw_mod_name)
+            else:
+                bname = resolve_mod_block(raw_mod_name)
         else:
             bname = resolve_vanilla_1710(full_id, meta)
 
