@@ -156,23 +156,27 @@ def resolve_vanilla_1710(bid, meta):
     if bid == 7: return "minecraft:bedrock"
     if bid in (8, 9): return "minecraft:water"
     if bid in (10, 11): return "minecraft:lava"
-    if bid == 12: return "minecraft:sand"
+    if bid == 12: return "minecraft:red_sand" if (meta & 1) == 1 else "minecraft:sand"
     if bid == 13: return "minecraft:gravel"
     if bid == 14: return "minecraft:gold_ore"
     if bid == 15: return "minecraft:iron_ore"
     if bid == 16: return "minecraft:coal_ore"
     if bid == 17:
-        w_idx = min(meta & 3, 3)
+        w_idx = min(meta & 3, len(WOOD_TYPES) - 1)
         return f"minecraft:{WOOD_TYPES[w_idx]}_log"
     if bid == 18:
-        w_idx = min(meta & 3, 3)
+        w_idx = min(meta & 3, len(WOOD_TYPES) - 1)
         return f"minecraft:{WOOD_TYPES[w_idx]}_leaves"
     if bid == 19: return "minecraft:sponge"
     if bid == 20: return "minecraft:glass"
     if bid == 21: return "minecraft:lapis_ore"
     if bid == 22: return "minecraft:lapis_block"
     if bid == 23: return "minecraft:dispenser"
-    if bid == 24: return "minecraft:sandstone"
+    if bid == 24:
+        sub = meta & 3
+        if sub == 1: return "minecraft:chiseled_sandstone"
+        if sub == 2: return "minecraft:cut_sandstone"
+        return "minecraft:sandstone"
     if bid == 25: return "minecraft:note_block"
     if bid == 26: return "minecraft:red_bed"
     if bid == 27: return "minecraft:powered_rail"
@@ -181,16 +185,31 @@ def resolve_vanilla_1710(bid, meta):
     if bid == 30: return "minecraft:cobweb"
     if bid == 31: return "minecraft:tall_grass" if (meta & 3) == 2 else "minecraft:short_grass"
     if bid == 32: return "minecraft:dead_bush"
+    if bid in (33, 34, 36): return "minecraft:piston"
     if bid == 35:
         c_idx = min(meta & 15, 15)
         return f"minecraft:{COLORS[c_idx]}_wool"
     if bid == 37: return "minecraft:dandelion"
-    if bid == 38: return "minecraft:poppy"
+    if bid == 38:
+        sub = meta & 15
+        flower_map = {
+            0: "poppy", 1: "blue_orchid", 2: "allium", 3: "azure_bluet",
+            4: "red_tulip", 5: "orange_tulip", 6: "white_tulip", 7: "pink_tulip",
+            8: "oxeye_daisy"
+        }
+        return f"minecraft:{flower_map.get(sub, 'poppy')}"
     if bid == 39: return "minecraft:brown_mushroom"
     if bid == 40: return "minecraft:red_mushroom"
     if bid == 41: return "minecraft:gold_block"
     if bid == 42: return "minecraft:iron_block"
-    if bid == 44: return "minecraft:smooth_stone_slab"
+    if bid in (43, 44):
+        sub = meta & 7
+        slab_types = {
+            0: "smooth_stone_slab", 1: "sandstone_slab", 2: "petrified_oak_slab",
+            3: "cobblestone_slab", 4: "brick_slab", 5: "stone_brick_slab",
+            6: "nether_brick_slab", 7: "quartz_slab"
+        }
+        return f"minecraft:{slab_types.get(sub, 'smooth_stone_slab')}"
     if bid == 45: return "minecraft:bricks"
     if bid == 46: return "minecraft:tnt"
     if bid == 47: return "minecraft:bookshelf"
@@ -198,42 +217,122 @@ def resolve_vanilla_1710(bid, meta):
     if bid == 49: return "minecraft:obsidian"
     if bid == 50: return "minecraft:torch"
     if bid == 51: return "minecraft:fire"
+    if bid == 52: return "minecraft:spawner"
     if bid == 53: return "minecraft:oak_stairs"
     if bid == 54: return "minecraft:chest"
+    if bid == 55: return "minecraft:redstone_wire"
     if bid == 56: return "minecraft:diamond_ore"
     if bid == 57: return "minecraft:diamond_block"
     if bid == 58: return "minecraft:crafting_table"
+    if bid == 59: return "minecraft:wheat"
+    if bid == 60: return "minecraft:farmland"
     if bid in (61, 62): return "minecraft:furnace"
+    if bid == 63: return "minecraft:oak_sign"
     if bid == 64: return "minecraft:oak_door"
     if bid == 65: return "minecraft:ladder"
     if bid == 66: return "minecraft:rail"
     if bid == 67: return "minecraft:cobblestone_stairs"
+    if bid == 68: return "minecraft:oak_wall_sign"
+    if bid == 69: return "minecraft:lever"
+    if bid == 70: return "minecraft:stone_pressure_plate"
+    if bid == 71: return "minecraft:iron_door"
+    if bid == 72: return "minecraft:oak_pressure_plate"
     if bid in (73, 74): return "minecraft:redstone_ore"
+    if bid in (75, 76): return "minecraft:redstone_torch"
+    if bid == 77: return "minecraft:stone_button"
     if bid == 78: return "minecraft:snow"
     if bid == 79: return "minecraft:ice"
     if bid == 80: return "minecraft:snow_block"
     if bid == 81: return "minecraft:cactus"
     if bid == 82: return "minecraft:clay"
     if bid == 83: return "minecraft:sugar_cane"
+    if bid == 84: return "minecraft:jukebox"
     if bid == 85: return "minecraft:oak_fence"
-    if bid == 86: return "minecraft:pumpkin"
+    if bid == 86: return "minecraft:carved_pumpkin"
     if bid == 87: return "minecraft:netherrack"
     if bid == 88: return "minecraft:soul_sand"
     if bid == 89: return "minecraft:glowstone"
+    if bid == 90: return "minecraft:nether_portal"
+    if bid == 91: return "minecraft:jack_o_lantern"
+    if bid == 92: return "minecraft:cake"
+    if bid in (93, 94): return "minecraft:repeater"
     if bid == 95:
         c_idx = min(meta & 15, 15)
         return f"minecraft:{COLORS[c_idx]}_stained_glass"
-    if bid == 98: return "minecraft:stone_bricks"
+    if bid == 96: return "minecraft:oak_trapdoor"
+    if bid == 97: return "minecraft:infested_stone"
+    if bid == 98:
+        sub = meta & 3
+        if sub == 1: return "minecraft:mossy_stone_bricks"
+        if sub == 2: return "minecraft:cracked_stone_bricks"
+        if sub == 3: return "minecraft:chiseled_stone_bricks"
+        return "minecraft:stone_bricks"
+    if bid == 99: return "minecraft:brown_mushroom_block"
+    if bid == 100: return "minecraft:red_mushroom_block"
+    if bid == 101: return "minecraft:iron_bars"
     if bid == 102: return "minecraft:glass_pane"
     if bid == 103: return "minecraft:melon"
+    if bid == 104: return "minecraft:pumpkin_stem"
+    if bid == 105: return "minecraft:melon_stem"
     if bid == 106: return "minecraft:vine"
+    if bid == 107: return "minecraft:oak_fence_gate"
+    if bid == 108: return "minecraft:brick_stairs"
+    if bid == 109: return "minecraft:stone_brick_stairs"
+    if bid == 110: return "minecraft:mycelium"
     if bid == 111: return "minecraft:lily_pad"
+    if bid == 112: return "minecraft:nether_bricks"
+    if bid == 113: return "minecraft:nether_brick_fence"
+    if bid == 114: return "minecraft:nether_brick_stairs"
+    if bid == 115: return "minecraft:nether_wart"
+    if bid == 116: return "minecraft:enchanting_table"
+    if bid == 117: return "minecraft:brewing_stand"
+    if bid == 118: return "minecraft:cauldron"
+    if bid == 119: return "minecraft:end_portal"
+    if bid == 120: return "minecraft:end_portal_frame"
     if bid == 121: return "minecraft:end_stone"
-    if bid == 123: return "minecraft:redstone_lamp"
-    if bid == 126: return "minecraft:oak_slab"
+    if bid == 122: return "minecraft:dragon_egg"
+    if bid in (123, 124): return "minecraft:redstone_lamp"
+    if bid in (125, 126):
+        w_idx = min(meta & 7, len(WOOD_TYPES) - 1)
+        return f"minecraft:{WOOD_TYPES[w_idx]}_slab"
+    if bid == 127: return "minecraft:cocoa"
+    if bid == 128: return "minecraft:sandstone_stairs"
+    if bid == 129: return "minecraft:emerald_ore"
+    if bid == 130: return "minecraft:ender_chest"
+    if bid == 131: return "minecraft:tripwire_hook"
+    if bid == 132: return "minecraft:tripwire"
+    if bid == 133: return "minecraft:emerald_block"
     if bid == 134: return "minecraft:spruce_stairs"
     if bid == 135: return "minecraft:birch_stairs"
     if bid == 136: return "minecraft:jungle_stairs"
+    if bid == 137: return "minecraft:command_block"
+    if bid == 138: return "minecraft:beacon"
+    if bid == 139: return "minecraft:mossy_cobblestone_wall" if (meta & 1) == 1 else "minecraft:cobblestone_wall"
+    if bid == 140: return "minecraft:flower_pot"
+    if bid == 141: return "minecraft:carrots"
+    if bid == 142: return "minecraft:potatoes"
+    if bid == 143: return "minecraft:oak_button"
+    if bid == 144: return "minecraft:skeleton_skull"
+    if bid == 145: return "minecraft:anvil"
+    if bid == 146: return "minecraft:trapped_chest"
+    if bid == 147: return "minecraft:light_weighted_pressure_plate"
+    if bid == 148: return "minecraft:heavy_weighted_pressure_plate"
+    if bid in (149, 150): return "minecraft:comparator"
+    if bid == 151: return "minecraft:daylight_detector"
+    if bid == 152: return "minecraft:redstone_block"
+    if bid == 153: return "minecraft:nether_quartz_ore"
+    if bid == 154: return "minecraft:hopper"
+    if bid == 155:
+        sub = meta & 3
+        if sub == 1: return "minecraft:chiseled_quartz_block"
+        if sub == 2: return "minecraft:quartz_pillar"
+        return "minecraft:quartz_block"
+    if bid == 156: return "minecraft:quartz_stairs"
+    if bid == 157: return "minecraft:activator_rail"
+    if bid == 158: return "minecraft:dropper"
+    if bid == 159:
+        c_idx = min(meta & 15, 15)
+        return f"minecraft:{COLORS[c_idx]}_terracotta"
     if bid == 160:
         c_idx = min(meta & 15, 15)
         return f"minecraft:{COLORS[c_idx]}_stained_glass_pane"
@@ -243,11 +342,53 @@ def resolve_vanilla_1710(bid, meta):
         return "minecraft:dark_oak_log" if (meta & 1) == 1 else "minecraft:acacia_log"
     if bid == 163: return "minecraft:acacia_stairs"
     if bid == 164: return "minecraft:dark_oak_stairs"
+    if bid == 165: return "minecraft:slime_block"
+    if bid == 166: return "minecraft:barrier"
+    if bid == 167: return "minecraft:iron_trapdoor"
+    if bid == 168:
+        sub = meta & 3
+        if sub == 1: return "minecraft:prismarine_bricks"
+        if sub == 2: return "minecraft:dark_prismarine"
+        return "minecraft:prismarine"
+    if bid == 169: return "minecraft:sea_lantern"
     if bid == 170: return "minecraft:hay_block"
+    if bid == 171:
+        c_idx = min(meta & 15, 15)
+        return f"minecraft:{COLORS[c_idx]}_carpet"
     if bid == 172: return "minecraft:terracotta"
     if bid == 173: return "minecraft:coal_block"
     if bid == 174: return "minecraft:packed_ice"
-    if bid == 175: return "minecraft:sunflower"
+    if bid == 175:
+        sub = meta & 7
+        flower_map2 = {
+            0: "sunflower", 1: "lilac", 2: "tall_grass", 3: "large_fern",
+            4: "rose_bush", 5: "peony"
+        }
+        return f"minecraft:{flower_map2.get(sub, 'sunflower')}"
+    if bid in (176, 177): return "minecraft:white_banner"
+    if bid == 178: return "minecraft:daylight_detector"
+    if bid == 179:
+        sub = meta & 3
+        if sub == 1: return "minecraft:chiseled_red_sandstone"
+        if sub == 2: return "minecraft:cut_red_sandstone"
+        return "minecraft:red_sandstone"
+    if bid == 180: return "minecraft:red_sandstone_stairs"
+    if bid in (181, 182): return "minecraft:red_sandstone_slab"
+    if bid == 183: return "minecraft:spruce_fence_gate"
+    if bid == 184: return "minecraft:birch_fence_gate"
+    if bid == 185: return "minecraft:jungle_fence_gate"
+    if bid == 186: return "minecraft:dark_oak_fence_gate"
+    if bid == 187: return "minecraft:acacia_fence_gate"
+    if bid == 188: return "minecraft:spruce_fence"
+    if bid == 189: return "minecraft:birch_fence"
+    if bid == 190: return "minecraft:jungle_fence"
+    if bid == 191: return "minecraft:dark_oak_fence"
+    if bid == 192: return "minecraft:acacia_fence"
+    if bid == 193: return "minecraft:spruce_door"
+    if bid == 194: return "minecraft:birch_door"
+    if bid == 195: return "minecraft:jungle_door"
+    if bid == 196: return "minecraft:acacia_door"
+    if bid == 197: return "minecraft:dark_oak_door"
     return "minecraft:stone"
 
 AETHER_EXPLICIT = {
@@ -449,11 +590,63 @@ def resolve_mod_block(raw_name):
         if 'stair' in low: return "minecraft:deepslate_brick_stairs"
         return "minecraft:deepslate"
 
+    # 门类、活板门、栅栏门
+    if 'trapdoor' in low:
+        if 'iron' in low or 'metal' in low: return "minecraft:iron_trapdoor"
+        return "minecraft:oak_trapdoor"
+    if 'gate' in low:
+        return "minecraft:oak_fence_gate"
+    if 'door' in low:
+        if any(w in low for w in ['iron', 'metal', 'steel', 'alloy']): return "minecraft:iron_door"
+        if 'spruce' in low: return "minecraft:spruce_door"
+        if 'birch' in low: return "minecraft:birch_door"
+        if 'jungle' in low: return "minecraft:jungle_door"
+        if 'acacia' in low: return "minecraft:acacia_door"
+        if 'dark' in low: return "minecraft:dark_oak_door"
+        return "minecraft:oak_door"
+
+    # 家具、装饰、床、书架、工作台、容器、桌椅
+    if 'bed' in low: return "minecraft:red_bed"
+    if 'bookshelf' in low or 'shelf' in low or 'book' in low: return "minecraft:bookshelf"
+    if 'workbench' in low or 'crafting' in low or 'bench' in low: return "minecraft:crafting_table"
+    if 'chair' in low or 'couch' in low or 'seat' in low: return "minecraft:oak_stairs"
+    if 'table' in low or 'desk' in low: return "minecraft:oak_slab"
+    if 'mailbox' in low or 'sign' in low: return "minecraft:oak_sign"
+    if 'lever' in low: return "minecraft:lever"
+    if 'button' in low: return "minecraft:stone_button"
+    if 'pressure' in low: return "minecraft:stone_pressure_plate"
+    if 'barrel' in low or 'keg' in low: return "minecraft:barrel"
+    if 'pot' in low: return "minecraft:flower_pot"
+    if 'cauldron' in low: return "minecraft:cauldron"
+    if 'anvil' in low: return "minecraft:anvil"
+    if 'beacon' in low: return "minecraft:beacon"
+    if 'carpet' in low or 'cloth' in low or 'wool' in low: return "minecraft:white_carpet"
+    if 'candle' in low: return "minecraft:candle"
+    if 'lantern' in low or 'lamp' in low or 'light' in low or 'stele' in low: return "minecraft:lantern"
+    if 'crystal' in low or 'cluster' in low or 'rune' in low: return "minecraft:amethyst_cluster"
+    if 'cake' in low or 'food' in low: return "minecraft:cake"
+    if 'spawner' in low: return "minecraft:spawner"
+    if 'pillar' in low: return "minecraft:quartz_pillar"
+    if 'brick' in low: return "minecraft:bricks"
+    if 'fluid' in low or 'molten' in low: return "minecraft:water"
+
+    # 工业、机器、金属、管路
+    if any(w in low for w in ['machine', 'engine', 'generator', 'furnace', 'kiln', 'smelter', 'oven']): return "minecraft:blast_furnace"
+    if any(w in low for w in ['pipe', 'cable', 'wire', 'scaffold', 'railing', 'rail']):
+        if 'rail' in low and not ('railing' in low): return "minecraft:rail"
+        if 'railing' in low: return "minecraft:iron_bars"
+        return "minecraft:chain"
+    if any(w in low for w in ['metal', 'steel', 'alloy', 'sheet', 'plate', 'iron', 'tin', 'copper', 'lead', 'silver', 'bronze', 'ingot']):
+        if 'ore' in low: return "minecraft:iron_ore"
+        if 'gold' in low: return "minecraft:gold_block"
+        if 'copper' in low: return "minecraft:copper_block"
+        return "minecraft:iron_block"
+
     if 'glass' in low: return "minecraft:glass"
     if 'torch' in low: return "minecraft:torch"
     if 'wall' in low: return "minecraft:cobblestone_wall"
     if 'chest' in low and not ('chestnut' in low): return "minecraft:chest"
-    if any(k in low for k in ['flower', 'sapling', 'crop', 'plant', 'reed', 'flora', 'herb', 'weed']): return "minecraft:poppy"
+    if any(k in low for k in ['flower', 'sapling', 'crop', 'plant', 'reed', 'flora', 'herb', 'weed', 'bush']): return "minecraft:poppy"
     if any(k in low for k in ['mushroom', 'fungi']): return "minecraft:brown_mushroom"
     if 'vine' in low: return "minecraft:vine"
     if 'sand' in low: return "minecraft:sand"
@@ -473,6 +666,8 @@ def resolve_mod_block(raw_name):
 
 def load_mod_block_map(world_dir):
     level_dat = os.path.join(world_dir, 'level.dat')
+    if not os.path.exists(level_dat):
+        level_dat = os.path.join(world_dir, 'world', 'level.dat')
     if not os.path.exists(level_dat): return {}
     try:
         with open(level_dat, 'rb') as f:
