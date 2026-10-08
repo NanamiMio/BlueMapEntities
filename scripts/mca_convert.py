@@ -312,7 +312,7 @@ def resolve_mod_block(raw_name):
     if raw_name in AETHER_EXPLICIT:
         return AETHER_EXPLICIT[raw_name]
 
-    # TerraFirmaCraft 专属映射
+    # TerraFirmaCraft (TFC) 专属映射
     if 'terrafirmacraft' in low:
         if 'stoneigin' in low or 'stoneigex' in low or 'stonesed' in low or 'stonemm' in low:
             if 'cobble' in low: return "minecraft:cobblestone"
@@ -324,10 +324,80 @@ def resolve_mod_block(raw_name):
         if 'clay' in low: return "minecraft:clay"
         if 'sand' in low: return "minecraft:sand"
         if 'gravel' in low: return "minecraft:gravel"
-        if 'lognatural' in low: return "minecraft:oak_log"
+        if 'log' in low or 'wood' in low: return "minecraft:oak_log"
         if 'leaves' in low: return "minecraft:oak_leaves"
-        if 'ore' in low: return "minecraft:iron_ore"
+        if 'sapling' in low: return "minecraft:oak_sapling"
         if 'planks' in low: return "minecraft:oak_planks"
+        if 'ore' in low: return "minecraft:iron_ore"
+        if 'looserock' in low: return "minecraft:stone_button"
+        if 'reeds' in low: return "minecraft:sugar_cane"
+        if 'lilypad' in low: return "minecraft:lily_pad"
+        if 'fungi' in low: return "minecraft:brown_mushroom"
+        if 'vine' in low: return "minecraft:vine"
+        if 'berrybush' in low: return "minecraft:sweet_berry_bush"
+        if 'flora' in low: return "minecraft:poppy"
+        if 'crops' in low: return "minecraft:wheat"
+        if 'pumpkin' in low: return "minecraft:pumpkin"
+
+    # TFC-Tech 专属映射（橡胶树等）
+    if 'tfctech' in low or 'hevea' in low:
+        if 'heveal' in low or 'leaf' in low or 'leave' in low: return "minecraft:jungle_leaves"
+        if 'heveas' in low or 'sapling' in low: return "minecraft:jungle_sapling"
+        return "minecraft:jungle_log"
+
+    # HarvestCraft 潘马斯农场果树与作物专属映射
+    if 'harvestcraft' in low or low.startswith('pam'):
+        if 'sapling' in low: return "minecraft:oak_sapling"
+        if 'garden' in low or 'crop' in low: return "minecraft:poppy"
+        if any(f in low for f in ['apple', 'avocado', 'banana', 'cherry', 'chestnut', 'cinnamon', 'coconut',
+                                 'date', 'dragonfruit', 'durian', 'fig', 'grapefruit', 'lemon', 'lime',
+                                 'maple', 'mango', 'nutmeg', 'olive', 'orange', 'papaya', 'paperbark',
+                                 'peach', 'pear', 'pecan', 'peppercorn', 'persimmon', 'pistachio',
+                                 'plum', 'pomegranate', 'starfruit', 'vanillabean', 'walnut', 'gooseberry']):
+            if any(k in low for k in ['maple', 'paperbark', 'cinnamon']):
+                return "minecraft:oak_log"
+            return "minecraft:flowering_azalea_leaves"
+
+    # 魔法金属 (ManaMetalMod) 专属映射
+    if 'manametal' in low:
+        if 'bigbamboo' in low or 'bamboo' in low:
+            if 'stair' in low: return "minecraft:bamboo_stairs"
+            if 'salb' in low or 'slab' in low: return "minecraft:bamboo_slab"
+            return "minecraft:bamboo"
+        if 'chorustree' in low: return "minecraft:chorus_plant"
+        if 'azalea' in low: return "minecraft:flowering_azalea_leaves"
+        if 'mossplant' in low or 'vine' in low: return "minecraft:vine"
+        if 'honeycomb' in low: return "minecraft:bee_nest"
+        if 'chesttree' in low: return "minecraft:oak_log"
+        if 'dripleaf' in low: return "minecraft:big_dripleaf"
+        if 'lotus' in low: return "minecraft:lily_pad"
+
+    # 木楼梯与木台阶（必须在通用 stair/slab 之前拦截）
+    if 'stair' in low:
+        if any(w in low for w in ['wood', 'plank', 'bamboo', 'tree', 'spruce', 'birch', 'jungle', 'acacia', 'cherry', 'maple', 'pine', 'violet', 'nether']):
+            if 'spruce' in low or 'pine' in low: return "minecraft:spruce_stairs"
+            if 'birch' in low: return "minecraft:birch_stairs"
+            if 'jungle' in low: return "minecraft:jungle_stairs"
+            if 'acacia' in low: return "minecraft:acacia_stairs"
+            if 'cherry' in low or 'violet' in low: return "minecraft:cherry_stairs"
+            if 'netherblue' in low: return "minecraft:warped_stairs"
+            if 'netherred' in low: return "minecraft:crimson_stairs"
+            if 'bamboo' in low: return "minecraft:bamboo_stairs"
+            return "minecraft:oak_stairs"
+        return "minecraft:stone_brick_stairs"
+
+    if 'slab' in low or 'salb' in low:
+        if any(w in low for w in ['wood', 'plank', 'bamboo', 'tree', 'spruce', 'birch', 'jungle', 'acacia', 'cherry', 'maple', 'pine', 'violet', 'nether']):
+            if 'spruce' in low or 'pine' in low: return "minecraft:spruce_slab"
+            if 'birch' in low: return "minecraft:birch_slab"
+            if 'jungle' in low: return "minecraft:jungle_slab"
+            if 'acacia' in low: return "minecraft:acacia_slab"
+            if 'cherry' in low or 'violet' in low: return "minecraft:cherry_slab"
+            if 'netherblue' in low: return "minecraft:warped_slab"
+            if 'netherred' in low: return "minecraft:crimson_slab"
+            if 'bamboo' in low: return "minecraft:bamboo_slab"
+            return "minecraft:oak_slab"
+        return "minecraft:stone_brick_slab"
 
     # 通用语义分类（树木绝不退化为石头）
     if 'log' in low or ('wood' in low and not any(k in low for k in ['plank', 'slab', 'stair', 'button', 'door', 'fence', 'salb'])):
@@ -340,7 +410,7 @@ def resolve_mod_block(raw_name):
         if 'netherred' in low: return "minecraft:crimson_stem"
         return "minecraft:oak_log"
 
-    if 'leave' in low or 'leaves' in low:
+    if 'leave' in low or 'leaves' in low or 'leaf' in low:
         if 'cherry' in low or 'violet' in low: return "minecraft:cherry_leaves"
         if 'spruce' in low or 'pine' in low: return "minecraft:spruce_leaves"
         if 'birch' in low or 'skyroot' in low: return "minecraft:birch_leaves"
@@ -381,11 +451,11 @@ def resolve_mod_block(raw_name):
 
     if 'glass' in low: return "minecraft:glass"
     if 'torch' in low: return "minecraft:torch"
-    if 'stair' in low: return "minecraft:stone_brick_stairs"
-    if 'slab' in low or 'salb' in low: return "minecraft:stone_brick_slab"
     if 'wall' in low: return "minecraft:cobblestone_wall"
-    if 'chest' in low: return "minecraft:chest"
-    if 'flower' in low or 'sapling' in low or 'crop' in low: return "minecraft:poppy"
+    if 'chest' in low and not ('chestnut' in low): return "minecraft:chest"
+    if any(k in low for k in ['flower', 'sapling', 'crop', 'plant', 'reed', 'flora', 'herb', 'weed']): return "minecraft:poppy"
+    if any(k in low for k in ['mushroom', 'fungi']): return "minecraft:brown_mushroom"
+    if 'vine' in low: return "minecraft:vine"
     if 'sand' in low: return "minecraft:sand"
     if 'water' in low: return "minecraft:water"
     if 'lava' in low: return "minecraft:lava"
@@ -394,6 +464,10 @@ def resolve_mod_block(raw_name):
     if 'fence' in low: return "minecraft:oak_fence"
     if 'cobble' in low: return "minecraft:cobblestone"
     if 'gravel' in low: return "minecraft:gravel"
+
+    # 自然植被保底（任何遗漏的带树皮、枝干、植物特征的名字，绝不退化为石头）
+    if any(k in low for k in ['tree', 'bark', 'trunk', 'branch', 'root', 'botany']):
+        return "minecraft:oak_log"
 
     return "minecraft:stone"
 
@@ -492,6 +566,23 @@ def get_block_properties(bname):
         props["south"] = "none"
         props["west"] = "none"
         props["waterlogged"] = "false"
+    elif bname == "minecraft:stone_button":
+        props["face"] = "floor"
+        props["facing"] = "north"
+        props["powered"] = "false"
+    elif bname == "minecraft:sugar_cane":
+        props["age"] = "0"
+    elif bname == "minecraft:bamboo":
+        props["age"] = "1"
+        props["leaves"] = "small"
+        props["stage"] = "0"
+    elif bname in ("minecraft:bee_nest", "minecraft:beehive"):
+        props["facing"] = "north"
+        props["honey_level"] = "0"
+    elif bname == "minecraft:big_dripleaf":
+        props["tilt"] = "none"
+        props["facing"] = "north"
+        props["waterlogged"] = "false"
     elif bname == "minecraft:snow":
         props["layers"] = "1"
     elif bname in ("minecraft:lantern", "minecraft:soul_lantern"):
@@ -522,11 +613,7 @@ def convert_section_1710_to_116(sec_compound, mod_block_map, height_map=None):
     data = sec_compound['Data'][1] if 'Data' in sec_compound else bytearray(2048)
     add_data = sec_compound['Add'][1] if 'Add' in sec_compound else None
     y_val = sec_compound['Y'][1]
-
-    unique_ids = []
-    palette_map = {}
-    indices = []
-
+    raw_names = []
     for i in range(4096):
         b_low = blocks[i] & 0xFF
         if add_data is not None:
@@ -553,21 +640,43 @@ def convert_section_1710_to_116(sec_compound, mod_block_map, height_map=None):
                 bname = resolve_mod_block(raw_mod_name)
         else:
             bname = resolve_vanilla_1710(full_id, meta)
+        raw_names.append(bname)
 
-        if bname not in palette_map:
-            palette_map[bname] = len(unique_ids)
-            unique_ids.append(bname)
-        indices.append(palette_map[bname])
+    palette_entries = [] # list of (bname, props_dict)
+    palette_map = {} # (bname, props_tuple) -> index
+    indices = []
+
+    for i in range(4096):
+        bname = raw_names[i]
+        props = get_block_properties(bname).copy()
+        if any(bname.endswith(suffix) for suffix in ("_fence",)):
+            bx = i & 15
+            bz = (i >> 4) & 15
+            # 智能检测四邻方块
+            if bz > 0 and raw_names[i - 16] not in ("minecraft:air", "minecraft:cave_air"):
+                props["north"] = "true"
+            if bz < 15 and raw_names[i + 16] not in ("minecraft:air", "minecraft:cave_air"):
+                props["south"] = "true"
+            if bx > 0 and raw_names[i - 1] not in ("minecraft:air", "minecraft:cave_air"):
+                props["west"] = "true"
+            if bx < 15 and raw_names[i + 1] not in ("minecraft:air", "minecraft:cave_air"):
+                props["east"] = "true"
+
+        props_tuple = tuple(sorted(props.items()))
+        key = (bname, props_tuple)
+        if key not in palette_map:
+            palette_map[key] = len(palette_entries)
+            palette_entries.append((bname, props))
+        indices.append(palette_map[key])
 
     palette_items = []
-    for name in unique_ids:
+    for name, pdict in palette_entries:
         item = {'Name': (TAG_STRING, name)}
-        props = get_block_properties(name)
-        if props:
-            item['Properties'] = (TAG_COMPOUND, {k: (TAG_STRING, v) for k, v in props.items()})
+        if pdict:
+            item['Properties'] = (TAG_COMPOUND, {k: (TAG_STRING, v) for k, v in pdict.items()})
         palette_items.append(item)
 
-    bpe = max(4, math.ceil(math.log2(len(unique_ids)))) if len(unique_ids) > 1 else 4
+    bpe = max(4, math.ceil(math.log2(len(palette_entries)))) if len(palette_entries) > 1 else 4
     block_states = pack_block_states(indices, bpe)
 
     new_sec = {
